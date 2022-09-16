@@ -1,0 +1,31 @@
+{% extends 'store/base.html' %}
+{% load humanize %}
+
+{% block title %}
+Товары
+{% endblock %}
+
+{% block active-store %}active{% endblock %}
+
+{% block content %}
+<div class="row gy-2 gx-5 my-4">
+    {% for product in products %}
+    <div class="col-xxl-3 col-lg-4 col-md-6 col-12 mb-4">
+        <div class="card shadow-sm bg-body">
+            <div class="card-body">
+                <a href="#">
+                    <img src="https://sylcoc.com/wp-content/uploads/2017/03/placeholder.png" class="img-fluid rounded-2 mb-3" alt="...">
+                </a>
+                <h5 class="card-title">{{ product.name }}</h5>
+                <hr>
+                <h4 class="m-0 mb-2 font-monospace fw-semibold">{{ product.price|floatformat:"-2" }}<span class="ms-1">₽</span></h4>
+                <div class="d-flex justify-content-between align-items-center">
+                    <a href="#" class="btn btn-primary">В корзину</a>
+                    <a href="#" class="btn btn-outline-primary">Подробнее</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

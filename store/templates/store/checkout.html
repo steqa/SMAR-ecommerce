@@ -1,0 +1,129 @@
+{% extends 'store/base.html' %}
+
+{% block title %}
+Оплата
+{% endblock %}
+
+{% block active-checkout %}active{% endblock %}
+
+{% block content %}
+<div class="row gx-4 my-4">
+
+    <div class="col-8">
+        <div class="card shadow-sm p-4">
+            <h4 class="mb-3">Адрес доставки</h4>
+
+            <form>
+                <div class="row g-0">
+                    <div class="mb-3 form-floating col-sm-6 pe-2">
+                        <input type="text" class="form-control" placeholder="Имя">
+                        <label>Имя</label>
+                    </div>
+                    <div class="mb-3 form-floating col-sm-6 ps-2">
+                        <input type="text" class="form-control" placeholder="Фамилия">
+                        <label class="ms-2">Фамилия</label>
+                    </div>
+
+                    <div class="mb-3 form-floating col-12">
+                        <input type="email" class="form-control" placeholder="Необязательно">
+                        <label>Email <span class="text-muted">(Необязательно)</span></label>
+                    </div>
+
+                    <div class="mb-3 form-floating col-12">
+                        <input type="text" class="form-control" placeholder="Адрес">
+                        <label>Адрес</label>
+                    </div>
+
+                    <div class="form-floating col-md-5 pe-2">
+                        <input type="text" class="form-control" placeholder="Страна">
+                        <label>Страна</label>
+                    </div>
+
+                    <div class="form-floating col-md-4 pe-2 ps-2">
+                        <input type="text" class="form-control" placeholder="Город">
+                        <label class="ms-2">Город</label>
+                    </div>
+
+                    <div class="form-floating col-md-3 ps-2">
+                        <input type="text" class="form-control" placeholder="Почтовый индекс">
+                        <label class="ms-2">Почтовый индекс</label>
+                    </div>
+                </div>
+
+                <hr class="my-4">
+
+                <h4 class="mb-3">Платежные данные</h4>
+
+                <div class="row my-3 ms-1">
+                    <div class="col-7 row">
+                        <div class="col form-check">
+                            <input type="radio" class="form-check-input" checked="">
+                            <label class="form-check-label">Банковская карта</label>
+                        </div>
+                        <div class="col form-check">
+                            <input type="radio" class="form-check-input">
+                            <label class="form-check-label">PayPal</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-0">
+                    <div class="mb-3 form-floating col-md-6 pe-2">
+                        <input type="text" class="form-control" placeholder="Имя на карте">
+                        <label>Имя на карте</label>
+                    </div>
+
+                    <div class="mb-3 form-floating col-md-6 ps-2">
+                        <input type="text" class="form-control" placeholder="Номер карты">
+                        <label class="ms-2">Номер карты</label>
+                    </div>
+
+                    <div class="form-floating col-md-3 pe-3">
+                        <input type="text" class="form-control" placeholder="ММ / ГГ">
+                        <label class="font-monospace">ММ / ГГ</label>
+                    </div>
+
+                    <div class="form-floating col-md-3 ps-1 pe-2">
+                        <input type="text" class="form-control" placeholder="CVV">
+                        <label class="ms-1 font-monospace">CVV</label>
+                    </div>
+                </div>
+
+                <hr class="my-4">
+
+                <button class="w-100 btn btn-primary btn-lg" type="submit">Продолжить оплату</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-4">
+        <div class="card shadow-sm p-4">
+            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                <a href="{% url 'cart' %}" class="btn btn-outline-primary fs-5">Корзина</a>
+                <span class="badge bg-primary rounded-pill">10</span>
+            </h4>
+            <div class="">
+                <hr>
+                {% for item in count %}
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                        <img src="https://sylcoc.com/wp-content/uploads/2017/03/placeholder.png" class="rounded-1" style="height: 30px;" alt="...">
+                        <h6 class="m-0 ms-2">Имя продукта</h6>
+                    </div>
+                    <div>
+                        <p class="m-0 text-secondary text-end">x2</p>
+                        <p class="m-0 font-monospace fw-semibold">125.000<span class="ms-1">₽</span></p>
+                    </div>
+                </div>
+                <hr>
+                {% endfor %}
+                <div class="d-flex justify-content-between">
+                    <span>Итого</span>
+                    <p class="m-0 font-monospace fw-semibold">1.250.000<span class="ms-1">₽</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
