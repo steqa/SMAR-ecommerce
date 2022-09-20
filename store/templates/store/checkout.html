@@ -9,7 +9,34 @@
 {% block content %}
 <div class="row gx-4 my-4">
 
-    <div class="col-8">
+    <div class="col-xl-4 col-12 order-xl-last mb-4">
+        <div class="card shadow-sm p-4">
+            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                <a href="{% url 'cart' %}" class="btn btn-outline-primary fs-5">Корзина</a>
+                <span class="badge bg-primary rounded-pill">{{ order.get_total_order_quantity }}</span>
+            </h4>
+            <hr>
+            {% for item in order_items %}
+            <div class="row align-items-center">
+                <div class="col-8 d-flex align-items-center">
+                    <img src="{{ item.product.image.url }}" class="rounded-1" style="height: 50px;" alt="...">
+                    <h6 class="m-0 ms-2">{{ item.product.name }}</h6>
+                </div>
+                <div class="col-4 text-end">
+                    <p class="m-0 text-secondary text-end">x{{ item.quantity }}</p>
+                    <p class="m-0 font-monospace fw-semibold">{{ item.product.price|floatformat:"-2" }}<span class="ms-1">₽</span></p>
+                </div>
+            </div>
+            <hr>
+            {% endfor %}
+            <div class="d-flex justify-content-between">
+                <span>Итого</span>
+                <p class="m-0 font-monospace fw-semibold">{{ order.get_total_order_price|floatformat:"-2" }}<span class="ms-1">₽</span></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-8 col-12">
         <div class="card shadow-sm p-4">
             <h4 class="mb-3">Адрес доставки</h4>
 
@@ -93,35 +120,6 @@
 
                 <button class="w-100 btn btn-primary btn-lg" type="submit">Продолжить оплату</button>
             </form>
-        </div>
-    </div>
-
-    <div class="col-4">
-        <div class="card shadow-sm p-4">
-            <h4 class="d-flex justify-content-between align-items-center mb-3">
-                <a href="{% url 'cart' %}" class="btn btn-outline-primary fs-5">Корзина</a>
-                <span class="badge bg-primary rounded-pill">10</span>
-            </h4>
-            <div class="">
-                <hr>
-                {% for item in count %}
-                <div class="d-flex justify-content-between align-items-center">
-                    <div class="d-flex align-items-center">
-                        <img src="https://sylcoc.com/wp-content/uploads/2017/03/placeholder.png" class="rounded-1" style="height: 30px;" alt="...">
-                        <h6 class="m-0 ms-2">Имя продукта</h6>
-                    </div>
-                    <div>
-                        <p class="m-0 text-secondary text-end">x2</p>
-                        <p class="m-0 font-monospace fw-semibold">125.000<span class="ms-1">₽</span></p>
-                    </div>
-                </div>
-                <hr>
-                {% endfor %}
-                <div class="d-flex justify-content-between">
-                    <span>Итого</span>
-                    <p class="m-0 font-monospace fw-semibold">1.250.000<span class="ms-1">₽</span></p>
-                </div>
-            </div>
         </div>
     </div>
 
