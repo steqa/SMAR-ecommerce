@@ -1,10 +1,51 @@
-const updateBtns = document.querySelectorAll('[data-action]');
+const updateBtns = document.querySelectorAll('[data-action]')
 
 updateBtns.forEach(function (item) {
     item.addEventListener('click', function () {
-        const productId = this.dataset.product
+        const productID = this.dataset.product
         const action = this.dataset.action
-        console.log('productID:', productId, 'action:', action)
-        console.log('user:', user)
-    });
-});
+
+        if (user == 'AnonymousUser') {
+            console.log('Not logged in')
+        } else {
+            updateOrder(productID, action)
+        }
+    })
+})
+
+function updateOrder(productID, action) {
+    const url = '/update-item/'
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken,
+        },
+        body: JSON.stringify({
+            'productID': productID,
+            'action': action,
+        }),
+    })
+
+        .then((response) => {
+            return response.json()
+        })
+
+        .then((data) => {
+            const product = document.getElementById(productID)
+            if (product) {
+                if (data['productQuantity'] <= 0) {
+                    product.remove()
+                } else {
+                    product.querySelector('.productQuantity').innerHTML = data['productQuantity']
+                    product.querySelector('.productTotalPrice').innerHTML = data['productTotalPrice']
+                }
+
+                document.querySelector('.totalOrderPrice').innerHTML = data['totalOrderPrice']
+                document.querySelector('.totalOrderQuantity').innerHTML = data['totalOrderQuantity']
+            }
+
+            document.querySelector('.cart').innerHTML = data['cartItems']
+        })
+}

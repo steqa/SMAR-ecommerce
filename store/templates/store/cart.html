@@ -51,8 +51,8 @@
                 </div>
             </div>
             {% for item in order_items %}
-            <hr>
-            <div>
+            <div id="{{ item.product.id }}">
+                <hr>
                 <div class="row align-items-center">
                     <div class="col-lg-1 col-2">
                         <img src="{{ item.product.image.url }}" class="rounded-2"
@@ -62,19 +62,19 @@
                         <h6>{{ item.product.name }}</h6>
                     </div>
                     <div class="col-2">
-                        <h6 class="font-monospace fw-semibold">{{ item.product.price|floatformat:"-2" }}<span class="ms-1">₽</span></h6>
+                        <h6 class="font-monospace fw-semibold not-select">{{ item.product.price|floatformat:"-2" }}<span class="ms-1">₽</span></h6>
                     </div>
                     <div class="col-2">
                         <div class="d-flex">
-                            <a href="" class="text-secondary">
+                            <a data-product="{{ item.product.id }}" data-action="remove" class="text-secondary pointer">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
                                     class="bi bi-caret-left-fill mb-2" viewBox="0 0 16 16">
                                     <path
                                         d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z" />
                                 </svg>
                             </a>
-                            <h6 class="font-monospace fw-semibold m-0">{{ item.quantity }}</h6>
-                            <a href="" class="text-secondary">
+                            <h6 class="font-monospace fw-semibold m-0 not-select productQuantity">{{ item.quantity }}</h6>
+                            <a data-product="{{ item.product.id }}" data-action="add" class="text-secondary pointer">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
                                     class="bi bi-caret-right-fill mb-2" viewBox="0 0 16 16">
                                     <path
@@ -84,7 +84,7 @@
                         </div>
                     </div>
                     <div class="col-2">
-                        <h6 class="font-monospace fw-semibold">{{ item.get_total_items_price|floatformat:"-2" }}<span class="ms-1">₽</span></h6>
+                        <h6 class="font-monospace fw-semibold not-select"><span class="productTotalPrice">{{ item.get_total_items_price|floatformat:"-2" }}</span><span class="ms-1">₽</span></h6>
                     </div>
                 </div>
             </div>
@@ -100,11 +100,11 @@
                     </div>
                     <div class="col-2">
                         <div class="d-flex">
-                            <h5 class="font-monospace fw-semibold m-0 ms-1">{{ order.get_total_order_quantity }}</h5>
+                            <h5 class="font-monospace fw-semibold m-0 ms-1 not-select totalOrderQuantity">{{ order.get_total_order_quantity }}</h5>
                         </div>
                     </div>
                     <div class="col-2">
-                        <h5 class="font-monospace fw-semibold m-0">{{ order.get_total_order_price|floatformat:"-2" }}<span class="ms-1">₽</span></h5>
+                        <h5 class="font-monospace fw-semibold m-0 not-select"><span class="totalOrderPrice">{{ order.get_total_order_price|floatformat:"-2" }}</span><span class="ms-1">₽</span></h5>
                     </div>
                 </div>
             </div>
