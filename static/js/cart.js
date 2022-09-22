@@ -46,6 +46,10 @@ function updateOrder(productID, action) {
                 document.querySelector('.totalOrderQuantity').innerHTML = data['totalOrderQuantity']
             }
 
-            document.querySelector('.cart').innerHTML = data['cartItems']
+            if (data['cartItems']) {
+                document.querySelector('.cart').innerHTML = data['cartItems']
+            } else {
+                document.querySelector('.cart').remove()
+            }
         })
 }

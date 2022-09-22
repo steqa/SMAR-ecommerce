@@ -1,0 +1,19 @@
+.pointer {
+    cursor: pointer;
+}
+
+.not-select {
+    user-select: none;
+}
+
+.link-hover {
+    opacity: 100%;
+}
+
+.link-hover:hover {
+    opacity: 50%;
+}
+
+.link-hover:active {
+    opacity: 100%;
+}
