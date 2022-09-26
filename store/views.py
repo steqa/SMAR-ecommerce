@@ -1,8 +1,9 @@
 import json
+import datetime
 from django.http.response import JsonResponse
 from django.template.defaultfilters import floatformat
 from django.shortcuts import render
-from .models import Product, Order, OrderItem
+from .models import Product, Order, OrderItem, ShippingAddress
 
 
 def store(request):
@@ -57,10 +58,16 @@ def checkout(request):
         'order': order,
         'cart_items': cart_items,
     }
+    
+    if request.user.is_authenticated:
+        context['first_name'] = customer.first_name
+        context['last_name'] = customer.last_name
+        context['email'] = customer.email
+        
     return render(request, 'store/checkout.html', context)
 
 
-def update_item(request):
+def update_order(request):
     data = json.loads(request.body)
     product_id = data['productID']
     action = data['action']
@@ -87,3 +94,28 @@ def update_item(request):
         'totalOrderPrice': floatformat(order.get_total_order_price, '-2'),
         'totalOrderQuantity': order.get_total_order_quantity,
     }, safe=False)
+    
+    
+def place_order(request):
+    transaction_id = datetime.datetime.now().timestamp()
+    data = json.loads(request.body)
+    
+    if request.user.is_authenticated:
+        customer = request.user.customer
+        order, created = Order.objects.get_or_create(customer=customer, complete=False)
+        total_order_price = float(data['shippingInfo']['totalOrderPrice'].replace(',', '.'))
+        order.transaction_id = transaction_id
+
+        if total_order_price == float(order.get_total_order_price):
+            order.complete = True
+        order.save()
+        
+        ShippingAddress.objects.create(
+            customer=customer,
+            order=order,
+            address=data['shippingInfo']['address'],
+            city=data['shippingInfo']['city'],
+            country=data['shippingInfo']['country'],
+            postcode=data['shippingInfo']['postcode'],
+        )
+    return JsonResponse('Payment complete!', safe=False)

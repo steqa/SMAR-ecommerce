@@ -1,4 +1,5 @@
 {% extends 'store/base.html' %}
+{% load static %}
 {% load humanize %}
 
 {% block title %}
@@ -18,7 +19,7 @@
                 </a>
                 <h5 class="card-title" style="min-height: 49px;">{{ product.name }}</h5>
                 <hr>
-                <h4 class="m-0 mb-2 font-monospace fw-semibold">{{ product.price|floatformat:"-2" }}<span
+                <h4 class="m-0 mb-2 font-monospace fw-semibold">{{ product.price|floatformat:"-2"|intcomma }}<span
                         class="ms-1">₽</span></h4>
                 <div class="d-flex justify-content-between align-items-center">
                     <button data-product="{{ product.id }}" data-action="add" class="add-to-cart-btn btn btn-primary">
@@ -38,4 +39,6 @@
     </div>
     {% endfor %}
 </div>
+
+<script src="{% static 'js/add-to-cart-btn.js' %}"></script>
 {% endblock %}

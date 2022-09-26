@@ -1,4 +1,6 @@
 {% extends 'store/base.html' %}
+{% load static %}
+{% load humanize %}
 
 {% block title %}
 Корзина
@@ -62,7 +64,7 @@
                         <h6>{{ item.product.name }}</h6>
                     </div>
                     <div class="col-2">
-                        <h6 class="font-monospace fw-semibold not-select">{{ item.product.price|floatformat:"-2" }}<span class="ms-1">₽</span></h6>
+                        <h6 class="font-monospace fw-semibold not-select">{{ item.product.price|floatformat:"-2"|intcomma }}<span class="ms-1">₽</span></h6>
                     </div>
                     <div class="col-2">
                         <div class="d-flex">
@@ -84,7 +86,7 @@
                         </div>
                     </div>
                     <div class="col-2">
-                        <h6 class="font-monospace fw-semibold not-select"><span class="productTotalPrice">{{ item.get_total_items_price|floatformat:"-2" }}</span><span class="ms-1">₽</span></h6>
+                        <h6 class="font-monospace fw-semibold not-select"><span class="productTotalPrice">{{ item.get_total_items_price|floatformat:"-2"|intcomma }}</span><span class="ms-1">₽</span></h6>
                     </div>
                 </div>
             </div>
@@ -104,11 +106,13 @@
                         </div>
                     </div>
                     <div class="col-2">
-                        <h5 class="font-monospace fw-semibold m-0 not-select"><span class="totalOrderPrice">{{ order.get_total_order_price|floatformat:"-2" }}</span><span class="ms-1">₽</span></h5>
+                        <h5 class="font-monospace fw-semibold m-0 not-select"><span class="totalOrderPrice">{{ order.get_total_order_price|floatformat:"-2"|intcomma }}</span><span class="ms-1">₽</span></h5>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script src="{% static 'js/cart.js' %}"></script>
 {% endblock %}

@@ -1,4 +1,6 @@
 {% extends 'store/base.html' %}
+{% load static %}
+{% load humanize %}
 
 {% block title %}
 Оплата
@@ -24,14 +26,14 @@
                 </div>
                 <div class="col-4 text-end">
                     <p class="m-0 text-secondary text-end">x{{ item.quantity }}</p>
-                    <p class="m-0 font-monospace fw-semibold">{{ item.product.price|floatformat:"-2" }}<span class="ms-1">₽</span></p>
+                    <p class="m-0 font-monospace fw-semibold">{{ item.product.price|floatformat:"-2"|intcomma }}<span class="ms-1">₽</span></p>
                 </div>
             </div>
             <hr>
             {% endfor %}
             <div class="d-flex justify-content-between">
                 <span>Итого</span>
-                <p class="m-0 font-monospace fw-semibold">{{ order.get_total_order_price|floatformat:"-2" }}<span class="ms-1">₽</span></p>
+                <p class="m-0 font-monospace fw-semibold">{{ order.get_total_order_price|floatformat:"-2"|intcomma }}<span class="ms-1">₽</span></p>
             </div>
         </div>
     </div>
@@ -40,40 +42,56 @@
         <div class="card shadow-sm p-4">
             <h4 class="mb-3">Адрес доставки</h4>
 
-            <form>
-                <div class="row g-0">
-                    <div class="mb-3 form-floating col-sm-6 pe-2">
-                        <input type="text" class="form-control" placeholder="Имя">
-                        <label>Имя</label>
-                    </div>
-                    <div class="mb-3 form-floating col-sm-6 ps-2">
-                        <input type="text" class="form-control" placeholder="Фамилия">
-                        <label class="ms-2">Фамилия</label>
+            <form id="shippingForm">
+                <div class="row g-3">
+
+                    <div class="col-sm-6">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" name="firstName" placeholder="Имя" value="{{ first_name }}">
+                            <label>Имя</label>
+                        </div>
                     </div>
 
-                    <div class="mb-3 form-floating col-12">
-                        <input type="email" class="form-control" placeholder="Необязательно">
-                        <label>Email <span class="text-muted">(Необязательно)</span></label>
+                    <div class="col-sm-6">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" name="lastName" placeholder="Фамилия" value="{{ last_name }}">
+                            <label>Фамилия</label>
+                        </div>
                     </div>
 
-                    <div class="mb-3 form-floating col-12">
-                        <input type="text" class="form-control" placeholder="Адрес">
-                        <label>Адрес</label>
+                    <div class="col-12">
+                        <div class="form-floating">
+                            <input type="email" class="form-control" name="email" placeholder="Необязательно" value="{{ email }}">
+                            <label>Email <span class="text-muted">(Необязательно)</span></label>
+                        </div>
                     </div>
 
-                    <div class="form-floating col-md-5 pe-2">
-                        <input type="text" class="form-control" placeholder="Страна">
-                        <label>Страна</label>
+                    <div class="col-12">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" name="address" placeholder="Адрес">
+                            <label>Адрес</label>
+                        </div>
                     </div>
 
-                    <div class="form-floating col-md-4 pe-2 ps-2">
-                        <input type="text" class="form-control" placeholder="Город">
-                        <label class="ms-2">Город</label>
+                    <div class="col-md-4">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" name="country" placeholder="Страна">
+                            <label>Страна</label>
+                        </div>
                     </div>
 
-                    <div class="form-floating col-md-3 ps-2">
-                        <input type="text" class="form-control" placeholder="Почтовый индекс">
-                        <label class="ms-2">Почтовый индекс</label>
+                    <div class="col-md-4">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" name="city" placeholder="Город">
+                            <label>Город</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" name="postcode" placeholder="Почтовый индекс">
+                            <label>Почтовый индекс</label>
+                        </div>
                     </div>
                 </div>
 
@@ -81,47 +99,62 @@
 
                 <h4 class="mb-3">Платежные данные</h4>
 
-                <div class="row my-3 ms-1">
-                    <div class="col-7 row">
-                        <div class="col form-check">
-                            <input type="radio" class="form-check-input" checked="">
-                            <label class="form-check-label">Банковская карта</label>
+                <div class="row my-3">
+                    <div class="d-flex">
+                        <div class="form-check me-3">
+                            <input type="radio" class="form-check-input" name="bankCard" id="paymentMethod1" checked>
+                            <label class="form-check-label" for="paymentMethod1">Банковская карта</label>
                         </div>
-                        <div class="col form-check">
-                            <input type="radio" class="form-check-input">
-                            <label class="form-check-label">PayPal</label>
+                        <div class="form-check">
+                            <input type="radio" class="form-check-input" name="payPal" id="paymentMethod2">
+                            <label class="form-check-label" for="paymentMethod2">PayPal</label>
                         </div>
                     </div>
                 </div>
 
-                <div class="row g-0">
-                    <div class="mb-3 form-floating col-md-6 pe-2">
-                        <input type="text" class="form-control" placeholder="Имя на карте">
-                        <label>Имя на карте</label>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" name="cardName" placeholder="Имя на карте">
+                            <label>Имя на карте</label>
+                        </div>
                     </div>
 
-                    <div class="mb-3 form-floating col-md-6 ps-2">
-                        <input type="text" class="form-control" placeholder="Номер карты">
-                        <label class="ms-2">Номер карты</label>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" name="cardNumber" placeholder="Номер карты">
+                            <label>Номер карты</label>
+                        </div>
                     </div>
 
-                    <div class="form-floating col-md-3 pe-3">
-                        <input type="text" class="form-control" placeholder="ММ / ГГ">
-                        <label class="font-monospace">ММ / ГГ</label>
+                    <div class="col-sm-6">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" name="cardDate" placeholder="ММ / ГГ">
+                            <label class="font-monospace">ММ / ГГ</label>
+                        </div>
                     </div>
 
-                    <div class="form-floating col-md-3 ps-1 pe-2">
-                        <input type="text" class="form-control" placeholder="CVV">
-                        <label class="ms-1 font-monospace">CVV</label>
+                    <div class="col-sm-6">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" name="cardCVV" placeholder="CVV">
+                            <label class="font-monospace">CVV</label>
+                        </div>
                     </div>
                 </div>
 
                 <hr class="my-4">
 
-                <button class="w-100 btn btn-primary btn-lg" type="submit">Продолжить оплату</button>
+                <button class="w-100 btn btn-primary btn-lg" type="submit" id="paymentBtn">Продолжить оплату</button>
             </form>
         </div>
     </div>
 
 </div>
+
+<script>
+    const totalOrderPrice = '{{ order.get_total_order_price }}'
+    const storeUrl = '{% url "store" %}'
+</script>
+
+<script src="{% static 'js/checkout.js' %}"></script>
 {% endblock %}

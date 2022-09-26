@@ -14,7 +14,7 @@ updateBtns.forEach(function (item) {
 })
 
 function updateOrder(productID, action) {
-    const url = '/update-item/'
+    const url = '/update-order/'
 
     fetch(url, {
         method: 'POST',
