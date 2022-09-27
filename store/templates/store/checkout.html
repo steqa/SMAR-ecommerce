@@ -26,14 +26,14 @@
                 </div>
                 <div class="col-4 text-end">
                     <p class="m-0 text-secondary text-end">x{{ item.quantity }}</p>
-                    <p class="m-0 font-monospace fw-semibold">{{ item.product.price|floatformat:"-2"|intcomma }}<span class="ms-1">₽</span></p>
+                    <p class="m-0 font-monospace fw-semibold">{{ item.product.price|floatformat:"-2g" }}<span class="ms-1">₽</span></p>
                 </div>
             </div>
             <hr>
             {% endfor %}
             <div class="d-flex justify-content-between">
                 <span>Итого</span>
-                <p class="m-0 font-monospace fw-semibold">{{ order.get_total_order_price|floatformat:"-2"|intcomma }}<span class="ms-1">₽</span></p>
+                <p class="m-0 font-monospace fw-semibold">{{ order.get_total_order_price|floatformat:"-2g" }}<span class="ms-1">₽</span></p>
             </div>
         </div>
     </div>

@@ -50,6 +50,6 @@ function submitFormData() {
         .then((data) => {
             console.log('Success:', data)
             alert('Payment complete!')
-            window.location.href = storeUrl
+            window.location.replace(storeUrl)
         })
 }

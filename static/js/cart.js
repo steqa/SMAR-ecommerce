@@ -6,16 +6,35 @@ updateBtns.forEach(function (item) {
         const action = this.dataset.action
 
         if (user == 'AnonymousUser') {
-            console.log('Not logged in')
+            addCoockieItem(productID, action)
         } else {
             updateOrder(productID, action)
         }
     })
 })
 
+function addCoockieItem(productID, action) {
+    if (action == 'add') {
+        if (cart[productID] == undefined) {
+            cart[productID] = { 'quantity': 1 }
+        } else {
+            cart[productID]['quantity'] += 1
+        }
+    }
+
+    if (action == 'remove') {
+        cart[productID]['quantity'] -= 1
+        if (cart[productID]['quantity'] <= 0) {
+            delete cart[productID]
+        }
+    }
+
+    updateOrder(productID, action)
+    document.cookie = 'cart=' + JSON.stringify(cart) + ';domain=;path=/'
+}
+
 function updateOrder(productID, action) {
     const url = '/update-order/'
-
     fetch(url, {
         method: 'POST',
         headers: {
@@ -39,15 +58,15 @@ function updateOrder(productID, action) {
                     product.remove()
                 } else {
                     product.querySelector('.productQuantity').innerHTML = data['productQuantity']
-                    product.querySelector('.productTotalPrice').innerHTML = data['productTotalPrice']
+                    product.querySelector('.productPrice').innerHTML = data['productPrice']
                 }
 
-                document.querySelector('.totalOrderPrice').innerHTML = data['totalOrderPrice']
-                document.querySelector('.totalOrderQuantity').innerHTML = data['totalOrderQuantity']
+                document.querySelector('.cartTotalPrice').innerHTML = data['cartTotalPrice']
+                document.querySelector('.cartTotalQuantity').innerHTML = data['cartTotalQuantity']
             }
 
-            if (data['cartItems']) {
-                document.querySelector('.cart').innerHTML = data['cartItems']
+            if (data['cartTotalQuantity']) {
+                document.querySelector('.cart').innerHTML = data['cartTotalQuantity']
             } else {
                 document.querySelector('.cart').remove()
             }
