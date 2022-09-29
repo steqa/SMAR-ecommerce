@@ -2,16 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-class Customer(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    first_name = models.CharField(max_length=200)
-    last_name = models.CharField(max_length=200)
-    email = models.CharField(max_length=200)
-
-    def __str__(self) -> str:
-        return f'{self.first_name} {self.last_name}'
-
-
 class Product(models.Model):
     name = models.CharField(max_length=44)
     price = models.DecimalField(max_digits=9, decimal_places=2)
@@ -22,13 +12,13 @@ class Product(models.Model):
 
 
 class Order(models.Model):
-    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True)
+    customer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     date_ordered = models.DateTimeField(auto_now_add=True)
     complete = models.BooleanField(default=False)
     transaction_id = models.CharField(max_length=200)
 
     def __str__(self) -> str:
-        return f'{self.customer} {self.transaction_id}'
+        return f'{self.customer.first_name} {self.customer.last_name} {self.transaction_id}'
     
     @property
     def get_total_order_price(self):
@@ -50,7 +40,7 @@ class OrderItem(models.Model):
     date_added = models.DateTimeField(auto_now_add=True)
     
     def __str__(self) -> str:
-        return f'{self.order.customer} - {self.product}'
+        return f'{self.order.customer.first_name} {self.order.customer.last_name} - {self.product}'
     
     @property
     def get_total_items_price(self):
@@ -59,7 +49,7 @@ class OrderItem(models.Model):
     
     
 class ShippingAddress(models.Model):
-    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True)
+    customer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True)
     address = models.CharField(max_length=200)
     city = models.CharField(max_length=200)
@@ -68,4 +58,4 @@ class ShippingAddress(models.Model):
     date_added = models.DateTimeField(auto_now_add=True)
     
     def __str__(self) -> str:
-        return f'{self.customer} {self.order.transaction_id}'
+        return f'{self.customer.first_name} {self.customer.last_name} {self.order.transaction_id}'

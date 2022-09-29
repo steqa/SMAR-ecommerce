@@ -50,6 +50,12 @@ function submitFormData() {
         .then((data) => {
             console.log('Success:', data)
             alert('Payment complete!')
-            window.location.replace(storeUrl)
+            if (user == 'AnonymousUser') {
+                cart = {}
+                document.cookie = 'cart=' + JSON.stringify(cart) + ';domain=;path=/'
+                window.location.replace(storeUrl)
+            } else {
+                window.location.replace(storeUrl)
+            }
         })
 }
