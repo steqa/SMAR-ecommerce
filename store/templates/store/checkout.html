@@ -11,60 +11,92 @@
 {% block content %}
 <div class="row gx-4 my-4">
 
-    <div class="col-xl-4 col-12 order-xl-last mb-4">
-        <div class="card shadow-sm p-4">
-            <h4 class="d-flex justify-content-between align-items-center mb-3">
-                <a href="{% url 'cart' %}" class="btn btn-outline-primary fs-5">Корзина</a>
-                <span class="badge bg-primary rounded-pill">{{ order.get_total_order_quantity }}</span>
-            </h4>
-            <hr>
-            {% for item in order_items %}
-            <div class="row align-items-center">
-                <div class="col-8 d-flex align-items-center">
-                    <img src="{{ item.product.image.url }}" class="rounded-1" style="height: 50px;" alt="...">
-                    <h6 class="m-0 ms-2">{{ item.product.name }}</h6>
-                </div>
-                <div class="col-4 text-end">
-                    <p class="m-0 text-secondary text-end">x{{ item.quantity }}</p>
-                    <p class="m-0 font-monospace fw-semibold">{{ item.product.price|floatformat:"-2g" }}<span class="ms-1">₽</span></p>
-                </div>
-            </div>
-            <hr>
-            {% endfor %}
-            <div class="d-flex justify-content-between">
-                <span>Итого</span>
-                <p class="m-0 font-monospace fw-semibold">{{ order.get_total_order_price|floatformat:"-2g" }}<span class="ms-1">₽</span></p>
-            </div>
-        </div>
-    </div>
-
     <div class="col-xl-8 col-12">
         <div class="card shadow-sm p-4">
-            <h4 class="mb-3">Адрес доставки</h4>
-
-            <form id="shippingForm">
+            <form id="checkoutForm">
+                {% if request.user.is_authenticated == False %}
+                <h4 class="mb-3">Регистрация</h4>
                 <div class="row g-3">
+                    <div class="col-sm-4">
+                        <div class="form-floating">
+                            <input type="email" class="form-control" name="email" placeholder="Email">
+                            <label>Email</label>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
 
+                    <div class="col-sm-4">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" name="first_name" placeholder="Имя">
+                            <label>Имя</label>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" name="last_name" placeholder="Фамилия">
+                            <label>Фамилия</label>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-floating">
+                            <input type="username" class="form-control" name="username" placeholder="Логин">
+                            <label>Логин</label>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-floating">
+                            <input type="password" class="form-control" name="password1" placeholder="Пароль">
+                            <label>Пароль</label>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-floating">
+                            <input type="password" class="form-control" name="password2" placeholder="Повтор пароля">
+                            <label>Повтор пароля</label>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-4">
+                {% endif %}
+
+                <h4 class="mb-3">Адрес доставки</h4>
+
+                <div class="row g-3">
+                    {% if user.is_authenticated %}
                     <div class="col-sm-6">
                         <div class="form-floating">
-                            <input type="text" class="form-control" name="firstName" placeholder="Имя" value="{{ first_name }}">
+                            <input type="text" class="form-control" name="first_name" placeholder="Имя"
+                                value="{{ first_name }}" disabled>
                             <label>Имя</label>
                         </div>
                     </div>
 
                     <div class="col-sm-6">
                         <div class="form-floating">
-                            <input type="text" class="form-control" name="lastName" placeholder="Фамилия" value="{{ last_name }}">
+                            <input type="text" class="form-control" name="last_name" placeholder="Фамилия"
+                                value="{{ last_name }}" disabled>
                             <label>Фамилия</label>
                         </div>
                     </div>
 
                     <div class="col-12">
                         <div class="form-floating">
-                            <input type="email" class="form-control" name="email" placeholder="Необязательно" value="{{ email }}">
-                            <label>Email <span class="text-muted">(Необязательно)</span></label>
+                            <input type="email" class="form-control" name="email" placeholder="Email"
+                                value="{{ email }}" disabled>
+                            <label>Email</label>
                         </div>
                     </div>
+                    {% endif %}
 
                     <div class="col-12">
                         <div class="form-floating">
@@ -102,11 +134,11 @@
                 <div class="row my-3">
                     <div class="d-flex">
                         <div class="form-check me-3">
-                            <input type="radio" class="form-check-input" name="bankCard" id="paymentMethod1" checked>
+                            <input type="radio" class="form-check-input" name="bank_card" id="paymentMethod1" checked>
                             <label class="form-check-label" for="paymentMethod1">Банковская карта</label>
                         </div>
                         <div class="form-check">
-                            <input type="radio" class="form-check-input" name="payPal" id="paymentMethod2">
+                            <input type="radio" class="form-check-input" name="paypal" id="paymentMethod2">
                             <label class="form-check-label" for="paymentMethod2">PayPal</label>
                         </div>
                     </div>
@@ -115,28 +147,28 @@
                 <div class="row g-3">
                     <div class="col-md-6">
                         <div class="form-floating">
-                            <input type="text" class="form-control" name="cardName" placeholder="Имя на карте">
+                            <input type="text" class="form-control" name="card_name" placeholder="Имя на карте">
                             <label>Имя на карте</label>
                         </div>
                     </div>
 
                     <div class="col-md-6">
                         <div class="form-floating">
-                            <input type="text" class="form-control" name="cardNumber" placeholder="Номер карты">
+                            <input type="text" class="form-control" name="card_number" placeholder="Номер карты">
                             <label>Номер карты</label>
                         </div>
                     </div>
 
                     <div class="col-sm-6">
                         <div class="form-floating">
-                            <input type="text" class="form-control" name="cardDate" placeholder="ММ / ГГ">
+                            <input type="text" class="form-control" name="card_date" placeholder="ММ / ГГ">
                             <label class="font-monospace">ММ / ГГ</label>
                         </div>
                     </div>
 
                     <div class="col-sm-6">
                         <div class="form-floating">
-                            <input type="text" class="form-control" name="cardCVV" placeholder="CVV">
+                            <input type="text" class="form-control" name="card_CVV" placeholder="CVV">
                             <label class="font-monospace">CVV</label>
                         </div>
                     </div>
@@ -144,8 +176,37 @@
 
                 <hr class="my-4">
 
-                <button class="w-100 btn btn-primary btn-lg" type="submit" id="paymentBtn">Продолжить оплату</button>
+                <button class="w-100 btn btn-primary btn-lg" id="paymentBtn">Продолжить оплату</button>
             </form>
+        </div>
+    </div>
+
+    <div class="col-xl-4 col-12 order-xl-last order-first mb-4">
+        <div class="card shadow-sm p-4">
+            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                <a href="{% url 'cart' %}" class="btn btn-outline-primary fs-5">Корзина</a>
+                <span class="badge bg-primary rounded-pill">{{ order.get_total_order_quantity }}</span>
+            </h4>
+            <hr>
+            {% for item in order_items %}
+            <div class="row align-items-center">
+                <div class="col-8 d-flex align-items-center">
+                    <img src="{{ item.product.image.url }}" class="rounded-1" style="height: 50px;" alt="...">
+                    <h6 class="m-0 ms-2">{{ item.product.name }}</h6>
+                </div>
+                <div class="col-4 text-end">
+                    <p class="m-0 text-secondary text-end">x{{ item.quantity }}</p>
+                    <p class="m-0 font-monospace fw-semibold">{{ item.product.price|floatformat:"-2g" }}<span
+                            class="ms-1">₽</span></p>
+                </div>
+            </div>
+            <hr>
+            {% endfor %}
+            <div class="d-flex justify-content-between">
+                <span>Итого</span>
+                <p class="m-0 font-monospace fw-semibold">{{ order.get_total_order_price|floatformat:"-2g" }}<span
+                        class="ms-1">₽</span></p>
+            </div>
         </div>
     </div>
 

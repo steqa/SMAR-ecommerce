@@ -1,19 +1,22 @@
-console.log(totalOrderPrice)
-
 const paymentBtn = document.getElementById('paymentBtn')
-const shippingForm = document.getElementById('shippingForm')
-console.log(paymentBtn)
+const checkoutForm = document.getElementById('checkoutForm')
+const formFields = document.querySelectorAll('.form-control')
 
-paymentBtn.addEventListener('click', function (e) {
+paymentBtn.addEventListener('click', function (element) {
+    element.preventDefault()
     submitFormData()
 })
 
 function submitFormData() {
-    console.log('Payment btn clicked')
-    const shippingInfo = {
-        'firstName': null,
-        'lastName': null,
+    const userInfo = {
         'email': null,
+        'first_name': null,
+        'last_name': null,
+        'username': null,
+        'password1': null,
+        'password2': null,
+    }
+    const shippingInfo = {
         'address': null,
         'city': null,
         'country': null,
@@ -21,14 +24,19 @@ function submitFormData() {
         'totalOrderPrice': totalOrderPrice,
     }
 
-    shippingInfo.firstName = shippingForm.firstName.value
-    shippingInfo.lastName = shippingForm.lastName.value
-    shippingInfo.email = shippingForm.email.value
-    shippingInfo.address = shippingForm.address.value
-    shippingInfo.city = shippingForm.city.value
-    shippingInfo.country = shippingForm.country.value
-    shippingInfo.postcode = shippingForm.postcode.value
+    userInfo.email = checkoutForm.email.value
+    userInfo.first_name = checkoutForm.first_name.value
+    userInfo.last_name = checkoutForm.last_name.value
+    if (user == 'AnonymousUser') {
+        userInfo.username = checkoutForm.username.value
+        userInfo.password1 = checkoutForm.password1.value
+        userInfo.password2 = checkoutForm.password2.value
+    }
 
+    shippingInfo.address = checkoutForm.address.value
+    shippingInfo.city = checkoutForm.city.value
+    shippingInfo.country = checkoutForm.country.value
+    shippingInfo.postcode = checkoutForm.postcode.value
 
     const url = '/place-order/'
 
@@ -39,7 +47,8 @@ function submitFormData() {
             'X-CSRFToken': csrftoken,
         },
         body: JSON.stringify({
-            shippingInfo
+            'userInfo': userInfo,
+            'shippingInfo': shippingInfo,
         }),
     })
 
@@ -48,14 +57,27 @@ function submitFormData() {
         })
 
         .then((data) => {
-            console.log('Success:', data)
-            alert('Payment complete!')
+            // alert('Payment complete!')
+            formFields.forEach((element) => {
+                invalidFeedbackBlock = element.closest('.form-floating').querySelector('.invalid-feedback')
+
+                if (data['error_fields'].includes(element.getAttribute('name'))) {
+                    element.classList.remove('is-valid')
+                    element.classList.add('is-invalid')
+                    invalidFeedbackBlock.textContent = data['errors'][element.getAttribute('name')]
+                } else if (data['success_fields'].includes(element.getAttribute('name'))) {
+                    element.classList.remove('is-invalid')
+                    element.classList.add('is-valid')
+                    invalidFeedbackBlock.textContent = ''
+                }
+            })
+
             if (user == 'AnonymousUser') {
                 cart = {}
                 document.cookie = 'cart=' + JSON.stringify(cart) + ';domain=;path=/'
-                window.location.replace(storeUrl)
+                // window.location.replace(storeUrl)
             } else {
-                window.location.replace(storeUrl)
+                // window.location.replace(storeUrl)
             }
         })
 }

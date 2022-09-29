@@ -1,10 +1,13 @@
 import json
 import datetime
+from urllib.parse import urlencode
+from django.http import QueryDict
 from django.http.response import JsonResponse
 from django.template.defaultfilters import floatformat
 from django.shortcuts import render
 from .models import Product, Order, OrderItem, ShippingAddress
 from .utils import cookie_cart_data, cart_data
+from .forms import CustomUserCreationForm
 
 
 def store(request):
@@ -121,7 +124,31 @@ def place_order(request):
             
         order.save()
     else:
-        data_cart = cookie_cart_data(request)
-        
-        
-    return JsonResponse('Payment complete!', safe=False)
+        errors = {}
+        fields = ['email', 'first_name', 'last_name', 'username', 'password1', 'password2']
+        error_fields = []
+        success_fields = []
+        data_form = {}
+        data_form['email'] = data['userInfo']['email']
+        data_form['first_name'] = data['userInfo']['first_name']
+        data_form['last_name'] = data['userInfo']['last_name']
+        data_form['username'] = data['userInfo']['username']
+        data_form['password1'] = data['userInfo']['password1']
+        data_form['password2'] = data['userInfo']['password2']
+        user_creation_form = CustomUserCreationForm(QueryDict(urlencode(data_form)))
+        if user_creation_form.is_valid():
+            print('TRUE')
+        else:
+            for field in user_creation_form.errors:
+                errors[field] = user_creation_form.errors[field].as_text().strip('* ')
+                error_fields.append(field)
+
+            for f in fields:
+                if f not in error_fields:
+                    success_fields.append(f)
+            
+    return JsonResponse({
+        'errors': errors,
+        'error_fields': error_fields,
+        'success_fields': success_fields,
+    }, safe=False)
