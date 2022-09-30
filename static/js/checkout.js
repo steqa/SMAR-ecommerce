@@ -21,7 +21,6 @@ function submitFormData() {
         'city': null,
         'country': null,
         'postcode': null,
-        'totalOrderPrice': totalOrderPrice,
     }
 
     userInfo.email = checkoutForm.email.value
@@ -49,6 +48,7 @@ function submitFormData() {
         body: JSON.stringify({
             'userInfo': userInfo,
             'shippingInfo': shippingInfo,
+            'totalOrderPrice': totalOrderPrice,
         }),
     })
 
@@ -64,20 +64,22 @@ function submitFormData() {
                 if (data['error_fields'].includes(element.getAttribute('name'))) {
                     element.classList.remove('is-valid')
                     element.classList.add('is-invalid')
-                    invalidFeedbackBlock.textContent = data['errors'][element.getAttribute('name')]
+                    invalidFeedbackBlock.innerHTML = data['errors'][element.getAttribute('name')]
                 } else if (data['success_fields'].includes(element.getAttribute('name'))) {
                     element.classList.remove('is-invalid')
                     element.classList.add('is-valid')
-                    invalidFeedbackBlock.textContent = ''
+                    invalidFeedbackBlock.innerHTML = ''
                 }
             })
 
-            if (user == 'AnonymousUser') {
-                cart = {}
-                document.cookie = 'cart=' + JSON.stringify(cart) + ';domain=;path=/'
-                // window.location.replace(storeUrl)
-            } else {
-                // window.location.replace(storeUrl)
+            if (data['validation_error'] == false) {
+                if (user == 'AnonymousUser') {
+                    cart = {}
+                    document.cookie = 'cart=' + JSON.stringify(cart) + ';domain=;path=/'
+                    window.location.replace(storeUrl)
+                } else {
+                    window.location.replace(storeUrl)
+                }
             }
         })
 }

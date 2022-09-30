@@ -7,7 +7,7 @@ from django.template.defaultfilters import floatformat
 from django.shortcuts import render
 from .models import Product, Order, OrderItem, ShippingAddress
 from .utils import cookie_cart_data, cart_data
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, ShippingAddressForm
 
 
 def store(request):
@@ -104,12 +104,52 @@ def update_order(request):
 def place_order(request):
     transaction_id = datetime.datetime.now().timestamp()
     data = json.loads(request.body)
+    total_order_price = float(data['totalOrderPrice'].replace(',', '.'))
+    
+    errors = {}
+    fields = ['email', 'first_name', 'last_name', 'username', 'password1', 'password2', 'address', 'city', 'country', 'postcode']
+    error_fields = []
+    success_fields = []
+    validation_error = False
     
     if request.user.is_authenticated:
         customer = request.user
         order, created = Order.objects.get_or_create(customer=customer, complete=False)
-        total_order_price = float(data['shippingInfo']['totalOrderPrice'].replace(',', '.'))
-
+    else:
+        user_creation_form = CustomUserCreationForm(QueryDict(urlencode(data['userInfo'])))
+        shipping_address_form = ShippingAddressForm(QueryDict(urlencode(data['shippingInfo'])))
+        if user_creation_form.is_valid() and shipping_address_form.is_valid() and total_order_price != 0:
+            customer = user_creation_form.save()
+            data_cart = cookie_cart_data(request)
+            order_items = data_cart['order_items']
+            
+            order = Order.objects.create(
+                customer = customer,
+                complete = False,
+            )
+            for item in order_items:
+                product = Product.objects.get(id=item['product']['id'])
+                order_item = OrderItem.objects.create(
+                    product = product,
+                    order = order,
+                    quantity = item['quantity'],
+                )
+        else:
+            validation_error = True
+                    
+    if validation_error:
+        for field in user_creation_form.errors:
+            errors[field] = user_creation_form.errors[field].as_text().replace('* ', '&bull;&nbsp;').replace('\n', '<br>')
+            error_fields.append(field)
+            
+        for field in shipping_address_form.errors:
+            errors[field] = shipping_address_form.errors[field].as_text().replace('* ', '&bull;&nbsp;').replace('\n', '<br>')
+            error_fields.append(field)
+            
+        for f in fields:
+            if f not in error_fields:
+                success_fields.append(f)
+    else:
         if total_order_price == float(order.get_total_order_price) and total_order_price != 0:
             order.complete = True
             order.transaction_id = transaction_id
@@ -121,34 +161,14 @@ def place_order(request):
                 country=data['shippingInfo']['country'],
                 postcode=data['shippingInfo']['postcode'],
             )
-            
-        order.save()
-    else:
-        errors = {}
-        fields = ['email', 'first_name', 'last_name', 'username', 'password1', 'password2']
-        error_fields = []
-        success_fields = []
-        data_form = {}
-        data_form['email'] = data['userInfo']['email']
-        data_form['first_name'] = data['userInfo']['first_name']
-        data_form['last_name'] = data['userInfo']['last_name']
-        data_form['username'] = data['userInfo']['username']
-        data_form['password1'] = data['userInfo']['password1']
-        data_form['password2'] = data['userInfo']['password2']
-        user_creation_form = CustomUserCreationForm(QueryDict(urlencode(data_form)))
-        if user_creation_form.is_valid():
-            print('TRUE')
         else:
-            for field in user_creation_form.errors:
-                errors[field] = user_creation_form.errors[field].as_text().strip('* ')
-                error_fields.append(field)
-
-            for f in fields:
-                if f not in error_fields:
-                    success_fields.append(f)
+            validation_error = True
+        
+        order.save()
             
     return JsonResponse({
         'errors': errors,
         'error_fields': error_fields,
         'success_fields': success_fields,
+        'validation_error': validation_error,
     }, safe=False)
