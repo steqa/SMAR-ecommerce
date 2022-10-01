@@ -1,5 +1,8 @@
 import json
-from .models import Product, Order
+from urllib.parse import urlencode
+from django.http import QueryDict
+from .models import Product, Order, OrderItem
+from .forms import CustomUserCreationForm, ShippingAddressForm
 
 
 def cookie_cart_data(request):
@@ -55,4 +58,58 @@ def cart_data(request):
         'order': order,
         'order_items': order_items,
         'cart_total_quantity': cart_total_quantity,
+    }
+    
+    
+def guest_place_order(request, data):
+    customer = CustomUserCreationForm(QueryDict(urlencode(data['userInfo']))).save()
+    data_cart = cookie_cart_data(request)
+    order_items = data_cart['order_items']
+    
+    order = Order.objects.create(
+        customer = customer,
+        complete = False,
+    )
+    for item in order_items:
+        product = Product.objects.get(id=item['product']['id'])
+        order_item = OrderItem.objects.create(
+            product = product,
+            order = order,
+            quantity = item['quantity'],
+        )
+        
+    return customer, order
+
+
+def place_order_form_validation(request, data):
+    errors = {}
+    fields = ['email', 'first_name', 'last_name', 'username', 'password1', 'password2', 'address', 'city', 'country', 'postcode']
+    error_fields = []
+    success_fields = []
+    validation_error = False
+    
+    shipping_address_form = ShippingAddressForm(QueryDict(urlencode(data['shippingInfo'])))
+    if shipping_address_form.errors:
+        for field in shipping_address_form.errors:
+            errors[field] = shipping_address_form.errors[field].as_text().replace('* ', '&bull;&nbsp;').replace('\n', '<br>')
+            error_fields.append(field)
+        validation_error = True
+
+    if not request.user.is_authenticated:
+        user_creation_form = CustomUserCreationForm(QueryDict(urlencode(data['userInfo'])))
+        if user_creation_form.errors:
+            for field in user_creation_form.errors:
+                errors[field] = user_creation_form.errors[field].as_text().replace('* ', '&bull;&nbsp;').replace('\n', '<br>')
+                error_fields.append(field)
+            validation_error = True
+    
+    for f in fields:
+        if f not in error_fields:
+            success_fields.append(f)
+            
+    return {
+        'validation_error': validation_error,
+        'errors': errors,
+        'error_fields': error_fields,
+        'success_fields': success_fields,
     }

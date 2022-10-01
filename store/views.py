@@ -1,13 +1,10 @@
 import json
 import datetime
-from urllib.parse import urlencode
-from django.http import QueryDict
 from django.http.response import JsonResponse
 from django.template.defaultfilters import floatformat
 from django.shortcuts import render
 from .models import Product, Order, OrderItem, ShippingAddress
-from .utils import cookie_cart_data, cart_data
-from .forms import CustomUserCreationForm, ShippingAddressForm
+from .utils import cookie_cart_data, cart_data, guest_place_order, place_order_form_validation
 
 
 def store(request):
@@ -90,6 +87,7 @@ def update_order(request):
         except:
             productPrice = 0
             productQuantity = 0
+            
         cartTotalPrice = floatformat(order['get_total_order_price'], '-2g')
         cartTotalQuantity = order['get_total_order_quantity']
         
@@ -106,51 +104,20 @@ def place_order(request):
     data = json.loads(request.body)
     total_order_price = float(data['totalOrderPrice'].replace(',', '.'))
     
-    errors = {}
-    fields = ['email', 'first_name', 'last_name', 'username', 'password1', 'password2', 'address', 'city', 'country', 'postcode']
-    error_fields = []
-    success_fields = []
-    validation_error = False
+    validation_data = place_order_form_validation(request, data)
+    validation_error = validation_data['validation_error']
+    errors = validation_data['errors']
+    error_fields = validation_data['error_fields']
+    success_fields = validation_data['success_fields']
     
-    if request.user.is_authenticated:
-        customer = request.user
-        order, created = Order.objects.get_or_create(customer=customer, complete=False)
-    else:
-        user_creation_form = CustomUserCreationForm(QueryDict(urlencode(data['userInfo'])))
-        shipping_address_form = ShippingAddressForm(QueryDict(urlencode(data['shippingInfo'])))
-        if user_creation_form.is_valid() and shipping_address_form.is_valid() and total_order_price != 0:
-            customer = user_creation_form.save()
-            data_cart = cookie_cart_data(request)
-            order_items = data_cart['order_items']
-            
-            order = Order.objects.create(
-                customer = customer,
-                complete = False,
-            )
-            for item in order_items:
-                product = Product.objects.get(id=item['product']['id'])
-                order_item = OrderItem.objects.create(
-                    product = product,
-                    order = order,
-                    quantity = item['quantity'],
-                )
+    if (not validation_error) and (total_order_price > 0):
+        if request.user.is_authenticated:
+            customer = request.user
+            order, created = Order.objects.get_or_create(customer=customer, complete=False)
         else:
-            validation_error = True
-                    
-    if validation_error:
-        for field in user_creation_form.errors:
-            errors[field] = user_creation_form.errors[field].as_text().replace('* ', '&bull;&nbsp;').replace('\n', '<br>')
-            error_fields.append(field)
-            
-        for field in shipping_address_form.errors:
-            errors[field] = shipping_address_form.errors[field].as_text().replace('* ', '&bull;&nbsp;').replace('\n', '<br>')
-            error_fields.append(field)
-            
-        for f in fields:
-            if f not in error_fields:
-                success_fields.append(f)
-    else:
-        if total_order_price == float(order.get_total_order_price) and total_order_price != 0:
+            customer, order = guest_place_order(request, data)
+        
+        if total_order_price == float(order.get_total_order_price):
             order.complete = True
             order.transaction_id = transaction_id
             ShippingAddress.objects.create(
@@ -165,6 +132,8 @@ def place_order(request):
             validation_error = True
         
         order.save()
+    else:
+        validation_error = True
             
     return JsonResponse({
         'errors': errors,
