@@ -2,12 +2,85 @@ const paymentBtn = document.getElementById('paymentBtn')
 const checkoutForm = document.getElementById('checkoutForm')
 const formFields = document.querySelectorAll('.form-control')
 
+formFields.forEach((element) => {
+    element.addEventListener('input', function (e) {
+        const shippingInfo = getFormData()['shippingInfo']
+        const userInfo = getFormData()['userInfo']
+
+        const url = '/place-order-form-validation/'
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken,
+            },
+            body: JSON.stringify({
+                'userInfo': userInfo,
+                'shippingInfo': shippingInfo,
+                'totalOrderPrice': totalOrderPrice,
+            }),
+        })
+
+            .then((response) => {
+                return response.json()
+            })
+
+            .then((data) => {
+                for (error in data['errors']) {
+                    if (data['errors'][error] == '&bull;&nbsp;Обязательное поле.') {
+                        data['error_fields'].splice(data['error_fields'].indexOf(error), 1)
+                    }
+                }
+                updateFormFieldsStatus(data)
+            })
+    })
+})
+
 paymentBtn.addEventListener('click', function (element) {
     element.preventDefault()
     submitFormData()
 })
 
 function submitFormData() {
+    const shippingInfo = getFormData()['shippingInfo']
+    const userInfo = getFormData()['userInfo']
+
+    const url = '/place-order/'
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken,
+        },
+        body: JSON.stringify({
+            'userInfo': userInfo,
+            'shippingInfo': shippingInfo,
+            'totalOrderPrice': totalOrderPrice,
+        }),
+    })
+
+        .then((response) => {
+            return response.json()
+        })
+
+        .then((data) => {
+            updateFormFieldsStatus(data)
+
+            if (data['validation_error'] == false) {
+                if (user == 'AnonymousUser') {
+                    cart = {}
+                    document.cookie = 'cart=' + JSON.stringify(cart) + ';domain=;path=/'
+                    alert('Payment complete!')
+                    window.location.replace(storeUrl)
+                } else {
+                    alert('Payment complete!')
+                    window.location.replace(storeUrl)
+                }
+            }
+        })
+}
+
+function getFormData() {
     const userInfo = {
         'email': null,
         'first_name': null,
@@ -37,49 +110,21 @@ function submitFormData() {
     shippingInfo.country = checkoutForm.country.value
     shippingInfo.postcode = checkoutForm.postcode.value
 
-    const url = '/place-order/'
+    return { 'shippingInfo': shippingInfo, 'userInfo': userInfo }
+}
 
-    fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrftoken,
-        },
-        body: JSON.stringify({
-            'userInfo': userInfo,
-            'shippingInfo': shippingInfo,
-            'totalOrderPrice': totalOrderPrice,
-        }),
+function updateFormFieldsStatus(data) {
+    formFields.forEach((element) => {
+        invalidFeedbackBlock = element.closest('.form-floating').querySelector('.invalid-feedback')
+
+        if (data['error_fields'].includes(element.getAttribute('name'))) {
+            element.classList.remove('is-valid')
+            element.classList.add('is-invalid')
+            invalidFeedbackBlock.innerHTML = data['errors'][element.getAttribute('name')]
+        } else if (data['success_fields'].includes(element.getAttribute('name'))) {
+            element.classList.remove('is-invalid')
+            element.classList.add('is-valid')
+            invalidFeedbackBlock.innerHTML = ''
+        }
     })
-
-        .then((response) => {
-            return response.json()
-        })
-
-        .then((data) => {
-            // alert('Payment complete!')
-            formFields.forEach((element) => {
-                invalidFeedbackBlock = element.closest('.form-floating').querySelector('.invalid-feedback')
-
-                if (data['error_fields'].includes(element.getAttribute('name'))) {
-                    element.classList.remove('is-valid')
-                    element.classList.add('is-invalid')
-                    invalidFeedbackBlock.innerHTML = data['errors'][element.getAttribute('name')]
-                } else if (data['success_fields'].includes(element.getAttribute('name'))) {
-                    element.classList.remove('is-invalid')
-                    element.classList.add('is-valid')
-                    invalidFeedbackBlock.innerHTML = ''
-                }
-            })
-
-            if (data['validation_error'] == false) {
-                if (user == 'AnonymousUser') {
-                    cart = {}
-                    document.cookie = 'cart=' + JSON.stringify(cart) + ';domain=;path=/'
-                    window.location.replace(storeUrl)
-                } else {
-                    window.location.replace(storeUrl)
-                }
-            }
-        })
 }

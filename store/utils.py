@@ -1,6 +1,7 @@
 import json
 from urllib.parse import urlencode
 from django.http import QueryDict
+from django.http.response import JsonResponse
 from .models import Product, Order, OrderItem
 from .forms import CustomUserCreationForm, ShippingAddressForm
 
@@ -81,7 +82,12 @@ def guest_place_order(request, data):
     return customer, order
 
 
-def place_order_form_validation(request, data):
+def place_order_form_validation(request, data=None):
+    jsonresponse = False
+    if data is None:
+        data = json.loads(request.body)
+        jsonresponse = True
+
     errors = {}
     fields = ['email', 'first_name', 'last_name', 'username', 'password1', 'password2', 'address', 'city', 'country', 'postcode']
     error_fields = []
@@ -106,10 +112,12 @@ def place_order_form_validation(request, data):
     for f in fields:
         if f not in error_fields:
             success_fields.append(f)
-            
-    return {
-        'validation_error': validation_error,
+    
+    errors_data = {
         'errors': errors,
         'error_fields': error_fields,
         'success_fields': success_fields,
+        'validation_error': validation_error,
     }
+    
+    return JsonResponse(errors_data, safe=False) if jsonresponse else errors_data
