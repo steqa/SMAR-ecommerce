@@ -112,7 +112,7 @@ def place_order_form_validation(request, data=None):
     for f in fields:
         if f not in error_fields:
             success_fields.append(f)
-    
+
     errors_data = {
         'errors': errors,
         'error_fields': error_fields,

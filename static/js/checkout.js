@@ -125,6 +125,9 @@ function updateFormFieldsStatus(data) {
             element.classList.remove('is-invalid')
             element.classList.add('is-valid')
             invalidFeedbackBlock.innerHTML = ''
+        } else {
+            element.classList.remove('is-valid')
+            element.classList.remove('is-invalid')
         }
     })
 }
