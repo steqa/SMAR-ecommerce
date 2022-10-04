@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
 
     'store.apps.StoreConfig',
+    'authentication.apps.AuthenticationConfig',
 ]
 
 MIDDLEWARE = [

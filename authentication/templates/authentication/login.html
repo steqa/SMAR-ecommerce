@@ -1,0 +1,39 @@
+{% extends 'authentication/base.html' %}
+
+{% block title %}
+Вход
+{% endblock %}
+
+{% block content %}
+<h3 class="text-center mb-3">Вход</h3>
+<form id="loginForm">
+    <div class="row g-3 mb-4">
+        <div>
+            <div class="form-floating">
+                <input type="email" class="form-control" name="email" placeholder="Email" autocomplete="new-password">
+                <label>Email</label>
+                <div class="invalid-feedback"></div>
+            </div>
+        </div>
+        <div>
+            <div class="form-floating">
+                <input type="text" class="form-control" name="password1" placeholder="Пароль" autocomplete="new-password" onfocus="this.setAttribute('type', 'password');">
+                <label>Пароль</label>
+                <div class="invalid-feedback"></div>
+            </div>
+        </div>
+        <div>
+            <div class="form-floating">
+                <input type="text" class="form-control" name="password2" placeholder="Повтор пароля" autocomplete="new-password" onfocus="this.setAttribute('type', 'password');">
+                <label>Повтор пароля</label>
+                <div class="invalid-feedback"></div>
+            </div>
+        </div>
+    </div>
+
+    <button class="w-100 btn btn-primary btn-lg" id="loginBtn">Войти</button>
+    <p class="text-center my-2 text-secondary">или</p>
+    <a class="w-100 btn btn-outline-primary btn-lg" id="registerBtn" href="{% url 'register-user' %}">Зарегистрироваться</a>
+</form>
+
+{% endblock %}
