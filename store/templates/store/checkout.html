@@ -17,7 +17,15 @@
                 {% if request.user.is_authenticated == False %}
                 <h4 class="mb-3">Регистрация</h4>
                 <div class="row g-3">
-                    <div class="col-sm-4">
+                    <div class="col-6">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" name="fio" placeholder="Имя">
+                            <label>Ф И О</label>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
                         <div class="form-floating">
                             <input type="email" class="form-control" name="email" placeholder="Email" autocomplete="new-password">
                             <label>Email</label>
@@ -25,31 +33,7 @@
                         </div>
                     </div>
 
-                    <div class="col-sm-4">
-                        <div class="form-floating">
-                            <input type="text" class="form-control" name="first_name" placeholder="Имя">
-                            <label>Имя</label>
-                            <div class="invalid-feedback"></div>
-                        </div>
-                    </div>
-
-                    <div class="col-sm-4">
-                        <div class="form-floating">
-                            <input type="text" class="form-control" name="last_name" placeholder="Фамилия">
-                            <label>Фамилия</label>
-                            <div class="invalid-feedback"></div>
-                        </div>
-                    </div>
-
-                    <div class="col-sm-4">
-                        <div class="form-floating">
-                            <input type="text" class="form-control" name="username" placeholder="Логин">
-                            <label>Логин</label>
-                            <div class="invalid-feedback"></div>
-                        </div>
-                    </div>
-
-                    <div class="col-sm-4">
+                    <div class="col-sm-6">
                         <div class="form-floating">
                             <input type="password" class="form-control" name="password1" placeholder="Пароль" autocomplete="new-password">
                             <label>Пароль</label>
@@ -57,7 +41,7 @@
                         </div>
                     </div>
 
-                    <div class="col-sm-4">
+                    <div class="col-sm-6">
                         <div class="form-floating">
                             <input type="password" class="form-control" name="password2" placeholder="Повтор пароля" autocomplete="new-password">
                             <label>Повтор пароля</label>
@@ -73,23 +57,15 @@
 
                 <div class="row g-3">
                     {% if user.is_authenticated %}
-                    <div class="col-sm-6">
+                    <div class="col-6">
                         <div class="form-floating">
-                            <input type="text" class="form-control" placeholder="Имя"
-                                value="{{ first_name }}" disabled>
-                            <label>Имя</label>
+                            <input type="text" class="form-control" name="fio" placeholder="Имя"
+                            value="{{ fio }}" disabled>
+                            <label>Ф И О</label>
                         </div>
                     </div>
 
-                    <div class="col-sm-6">
-                        <div class="form-floating">
-                            <input type="text" class="form-control" placeholder="Фамилия"
-                                value="{{ last_name }}" disabled>
-                            <label>Фамилия</label>
-                        </div>
-                    </div>
-
-                    <div class="col-12">
+                    <div class="col-6">
                         <div class="form-floating">
                             <input type="email" class="form-control" placeholder="Email"
                                 value="{{ email }}" disabled>

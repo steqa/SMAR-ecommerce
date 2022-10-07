@@ -1,9 +1,11 @@
 import json
+import datetime
 from urllib.parse import urlencode
 from django.http import QueryDict
 from django.http.response import JsonResponse
 from .models import Product, Order, OrderItem
-from .forms import CustomUserCreationForm, ShippingAddressForm
+from .forms import ShippingAddressForm
+from authentication.forms import CustomUserCreationForm
 
 
 def cookie_cart_data(request):
@@ -63,6 +65,7 @@ def cart_data(request):
     
     
 def guest_place_order(request, data):
+    data['userInfo']['username'] = str(data['userInfo']['email']).split('@')[0]
     customer = CustomUserCreationForm(QueryDict(urlencode(data['userInfo']))).save()
     data_cart = cookie_cart_data(request)
     order_items = data_cart['order_items']
@@ -89,7 +92,7 @@ def place_order_form_validation(request, data=None):
         jsonresponse = True
 
     errors = {}
-    fields = ['email', 'first_name', 'last_name', 'username', 'password1', 'password2', 'address', 'city', 'country', 'postcode']
+    fields = ['fio', 'email', 'password1', 'password2', 'address', 'city', 'country', 'postcode']
     error_fields = []
     success_fields = []
     validation_error = False

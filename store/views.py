@@ -46,8 +46,7 @@ def checkout(request):
     }
     
     if request.user.is_authenticated:
-        context['first_name'] = request.user.first_name
-        context['last_name'] = request.user.last_name
+        context['fio'] = request.user.fio
         context['email'] = request.user.email
         
     return render(request, 'store/checkout.html', context)

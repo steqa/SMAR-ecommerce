@@ -82,9 +82,8 @@ function submitFormData() {
 
 function getFormData() {
     const userInfo = {
+        'fio': null,
         'email': null,
-        'first_name': null,
-        'last_name': null,
         'username': null,
         'password1': null,
         'password2': null,
@@ -97,10 +96,8 @@ function getFormData() {
     }
 
     if (user == 'AnonymousUser') {
+        userInfo.fio = checkoutForm.fio.value
         userInfo.email = checkoutForm.email.value
-        userInfo.first_name = checkoutForm.first_name.value
-        userInfo.last_name = checkoutForm.last_name.value
-        userInfo.username = checkoutForm.username.value
         userInfo.password1 = checkoutForm.password1.value
         userInfo.password2 = checkoutForm.password2.value
     }
