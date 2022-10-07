@@ -1,5 +1,4 @@
 import json
-import datetime
 from urllib.parse import urlencode
 from django.http import QueryDict
 from django.http.response import JsonResponse
@@ -85,12 +84,7 @@ def guest_place_order(request, data):
     return customer, order
 
 
-def place_order_form_validation(request, data=None):
-    jsonresponse = False
-    if data is None:
-        data = json.loads(request.body)
-        jsonresponse = True
-
+def place_order_form_validation(request, data):
     errors = {}
     fields = ['fio', 'email', 'password1', 'password2', 'address', 'city', 'country', 'postcode']
     error_fields = []
@@ -123,4 +117,4 @@ def place_order_form_validation(request, data=None):
         'validation_error': validation_error,
     }
     
-    return JsonResponse(errors_data, safe=False) if jsonresponse else errors_data
+    return JsonResponse(errors_data, safe=False) if not data['reload'] else errors_data

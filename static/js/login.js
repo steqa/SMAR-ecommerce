@@ -1,5 +1,5 @@
-const paymentBtn = document.getElementById('paymentBtn')
-const checkoutForm = document.getElementById('checkoutForm')
+const loginBtn = document.getElementById('loginBtn')
+const loginForm = document.getElementById('loginForm')
 const formFields = document.querySelectorAll('.form-control')
 
 formFields.forEach((element) => {
@@ -9,17 +9,16 @@ formFields.forEach((element) => {
     })
 })
 
-paymentBtn.addEventListener('click', function (element) {
+loginBtn.addEventListener('click', function (element) {
     element.preventDefault()
     const reload = true
     submitFormData(reload)
 })
 
 function submitFormData(reload) {
-    const shippingInfo = getFormData()['shippingInfo']
-    const userInfo = getFormData()['userInfo']
+    const loginInfo = getFormData()['loginInfo']
 
-    const url = '/place-order/'
+    const url = '/user/login/'
     fetch(url, {
         method: 'POST',
         headers: {
@@ -27,9 +26,7 @@ function submitFormData(reload) {
             'X-CSRFToken': csrftoken,
         },
         body: JSON.stringify({
-            'userInfo': userInfo,
-            'shippingInfo': shippingInfo,
-            'totalOrderPrice': totalOrderPrice,
+            'loginInfo': loginInfo,
             'reload': reload
         }),
     })
@@ -40,51 +37,24 @@ function submitFormData(reload) {
 
         .then((data) => {
             updateFormFieldsStatus(data)
-
             if (reload) {
                 if (data['validation_error'] == false) {
-                    if (user == 'AnonymousUser') {
-                        cart = {}
-                        document.cookie = 'cart=' + JSON.stringify(cart) + ';domain=;path=/'
-                        alert('Payment complete!')
-                        window.location.replace(storeUrl)
-                    } else {
-                        alert('Payment complete!')
-                        window.location.replace(storeUrl)
-                    }
+                    alert('Logged in!')
+                    window.location.replace(storeUrl)
                 }
             }
         })
 }
 
 function getFormData() {
-    const userInfo = {
-        'fio': null,
+    const loginInfo = {
         'email': null,
-        'username': null,
-        'password1': null,
-        'password2': null,
+        'password': null,
     }
-    const shippingInfo = {
-        'address': null,
-        'city': null,
-        'country': null,
-        'postcode': null,
-    }
+    loginInfo.email = loginForm.email.value
+    loginInfo.password = loginForm.password.value
 
-    if (user == 'AnonymousUser') {
-        userInfo.fio = checkoutForm.fio.value
-        userInfo.email = checkoutForm.email.value
-        userInfo.password1 = checkoutForm.password1.value
-        userInfo.password2 = checkoutForm.password2.value
-    }
-
-    shippingInfo.address = checkoutForm.address.value
-    shippingInfo.city = checkoutForm.city.value
-    shippingInfo.country = checkoutForm.country.value
-    shippingInfo.postcode = checkoutForm.postcode.value
-
-    return { 'shippingInfo': shippingInfo, 'userInfo': userInfo }
+    return { 'loginInfo': loginInfo }
 }
 
 function updateFormFieldsStatus(data) {

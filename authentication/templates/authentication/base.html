@@ -12,6 +12,31 @@
     <link rel="stylesheet" href="{% static 'css/input-status.css' %}">
 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1">
+
+    <script>
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        const user = '{{ request.user }}'
+        const csrftoken = getCookie('csrftoken');
+        let cart = JSON.parse(getCookie('cart'));
+        if (cart == undefined) { 
+            cart = {}
+            document.cookie = 'cart=' + JSON.stringify(cart) + ';domain=;path=/'
+        }
+    </script>
 </head>
 
 <body>
@@ -26,5 +51,7 @@
         </div>
     </div>
 </body>
+
+<script src="{% static 'js/login.js' %}"></script>
 
 </html>

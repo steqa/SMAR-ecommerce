@@ -99,8 +99,11 @@ def update_order(request):
     
     
 def place_order(request):
-    transaction_id = datetime.datetime.now().timestamp()
     data = json.loads(request.body)
+    if not data['reload']:
+        return place_order_form_validation(request, data)
+    
+    transaction_id = datetime.datetime.now().timestamp()
     total_order_price = float(data['totalOrderPrice'].replace(',', '.'))
     
     validation_data = place_order_form_validation(request, data)

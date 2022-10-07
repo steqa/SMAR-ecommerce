@@ -17,15 +17,8 @@
         </div>
         <div>
             <div class="form-floating">
-                <input type="text" class="form-control" name="password1" placeholder="Пароль" autocomplete="new-password" onfocus="this.setAttribute('type', 'password');">
+                <input type="text" class="form-control" name="password" placeholder="Пароль" autocomplete="new-password" onfocus="this.setAttribute('type', 'password');">
                 <label>Пароль</label>
-                <div class="invalid-feedback"></div>
-            </div>
-        </div>
-        <div>
-            <div class="form-floating">
-                <input type="text" class="form-control" name="password2" placeholder="Повтор пароля" autocomplete="new-password" onfocus="this.setAttribute('type', 'password');">
-                <label>Повтор пароля</label>
                 <div class="invalid-feedback"></div>
             </div>
         </div>
@@ -35,5 +28,9 @@
     <p class="text-center my-2 text-secondary">или</p>
     <a class="w-100 btn btn-outline-primary btn-lg" id="registerBtn" href="{% url 'register-user' %}">Зарегистрироваться</a>
 </form>
+
+<script>
+    const storeUrl = '{% url "store" %}'
+</script>
 
 {% endblock %}
