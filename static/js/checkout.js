@@ -78,7 +78,7 @@ function getFormData() {
         userInfo.password1 = checkoutForm.password1.value
         userInfo.password2 = checkoutForm.password2.value
     }
-
+    
     shippingInfo.address = checkoutForm.address.value
     shippingInfo.city = checkoutForm.city.value
     shippingInfo.country = checkoutForm.country.value
@@ -88,6 +88,12 @@ function getFormData() {
 }
 
 function updateFormFieldsStatus(data) {
+    for (error in data['errors']) {
+        if (data['errors'][error] == '&bull;&nbsp;Обязательное поле.') {
+            data['error_fields'].splice(data['error_fields'].indexOf(error), 1)
+        }
+    }
+
     formFields.forEach((element) => {
         invalidFeedbackBlock = element.closest('.form-floating').querySelector('.invalid-feedback')
 

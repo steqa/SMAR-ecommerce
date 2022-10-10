@@ -36,13 +36,11 @@ function submitFormData(reload) {
         })
 
         .then((data) => {
-            updateFormFieldsStatus(data)
-            if (reload) {
-                if (data['validation_error'] == false) {
-                    alert('Logged in!')
-                    window.location.replace(storeUrl)
-                }
+            if (data['reload'] == true) {
+                alert('Logged in!')
+                window.location.replace(storeUrl)
             }
+            updateFormFieldsStatus(data)
         })
 }
 
@@ -60,7 +58,6 @@ function getFormData() {
 function updateFormFieldsStatus(data) {
     formFields.forEach((element) => {
         invalidFeedbackBlock = element.closest('.form-floating').querySelector('.invalid-feedback')
-
         if (data['error_fields'].includes(element.getAttribute('name'))) {
             element.classList.remove('is-valid')
             element.classList.add('is-invalid')

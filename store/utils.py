@@ -109,6 +109,12 @@ def place_order_form_validation(request, data):
     for f in fields:
         if f not in error_fields:
             success_fields.append(f)
+        
+    if request.user.is_authenticated:
+        success_fields.remove('fio')
+        success_fields.remove('email')
+        success_fields.remove('password1')
+        success_fields.remove('password2')
 
     errors_data = {
         'errors': errors,

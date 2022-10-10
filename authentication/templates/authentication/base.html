@@ -31,11 +31,6 @@
 
         const user = '{{ request.user }}'
         const csrftoken = getCookie('csrftoken');
-        let cart = JSON.parse(getCookie('cart'));
-        if (cart == undefined) { 
-            cart = {}
-            document.cookie = 'cart=' + JSON.stringify(cart) + ';domain=;path=/'
-        }
     </script>
 </head>
 
