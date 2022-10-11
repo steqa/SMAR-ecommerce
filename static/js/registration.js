@@ -55,7 +55,7 @@ function getFormData() {
 
     registrationInfo.fio = registrationForm.fio.value
     registrationInfo.email = registrationForm.email.value
-    registrationInfo.username = (registrationForm.email.value).split('@')[0]
+    registrationInfo.username = registrationForm.email.value
     registrationInfo.password1 = registrationForm.password1.value
     registrationInfo.password2 = registrationForm.password2.value
 
