@@ -100,19 +100,14 @@ def update_order(request):
     
 def place_order(request):
     data = json.loads(request.body)
-    if not data['reload']:
-        return place_order_form_validation(request, data)
-    
-    transaction_id = datetime.datetime.now().timestamp()
-    total_order_price = float(data['totalOrderPrice'].replace(',', '.'))
-    
     validation_data = place_order_form_validation(request, data)
-    validation_error = validation_data['validation_error']
-    errors = validation_data['errors']
-    error_fields = validation_data['error_fields']
-    success_fields = validation_data['success_fields']
+    if data['reload'] is False:
+        return JsonResponse(validation_data, safe=True)
     
-    if (not validation_error) and (total_order_price > 0):
+    total_order_price = float(data['totalOrderPrice'].replace(',', '.'))
+    if validation_data['validation_error'] is False and (total_order_price > 0):
+        transaction_id = datetime.datetime.now().timestamp()
+    
         if request.user.is_authenticated:
             customer = request.user
             order, created = Order.objects.get_or_create(customer=customer, complete=False)
@@ -130,16 +125,6 @@ def place_order(request):
                 country=data['shippingInfo']['country'],
                 postcode=data['shippingInfo']['postcode'],
             )
-        else:
-            validation_error = True
         
         order.save()
-    else:
-        validation_error = True
-            
-    return JsonResponse({
-        'errors': errors,
-        'error_fields': error_fields,
-        'success_fields': success_fields,
-        'validation_error': validation_error,
-    }, safe=False)
+        return JsonResponse({'reload': True}, safe=True)

@@ -14,12 +14,12 @@ def login_user(request):
         email = data['loginInfo']['email']
         password = data['loginInfo']['password']
         validation_data = login_form_validation(request, email, password)
-        if data['reload'] is False:
+        
+        if data['reload'] is False or validation_data['validation_error']:
             return JsonResponse(validation_data, safe=True)
         else:
-            if validation_data['validation_error'] is False:
-                user = authenticate(request, email=email, password=password)
-                login(request, user)
+            user = authenticate(request, email=email, password=password)
+            login(request, user)
             return JsonResponse({'reload': True}, safe=True)
         
     context = {}
@@ -31,13 +31,13 @@ def register_user(request):
         data = json.loads(request.body)
         user = CustomUserCreationForm(QueryDict(urlencode(data['registrationInfo'])))
         validation_data = register_user_form_validation(user)
-        if data['reload'] is False:
+        
+        if data['reload'] is False or validation_data['validation_error']:
             return JsonResponse(validation_data, safe=True)
         else:
-            if validation_data['validation_error'] is False:
-                user = user.save()
-                login(request, user)
-                return JsonResponse({'reload': True}, safe=True)
+            user = user.save()
+            login(request, user)
+            return JsonResponse({'reload': True}, safe=True)
         
     context = {}
     return render(request, 'authentication/registration.html', context)

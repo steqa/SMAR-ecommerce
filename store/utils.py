@@ -64,7 +64,6 @@ def cart_data(request):
     
     
 def guest_place_order(request, data):
-    data['userInfo']['username'] = str(data['userInfo']['email']).split('@')[0]
     customer = CustomUserCreationForm(QueryDict(urlencode(data['userInfo']))).save()
     data_cart = cookie_cart_data(request)
     order_items = data_cart['order_items']
@@ -123,4 +122,4 @@ def place_order_form_validation(request, data):
         'validation_error': validation_error,
     }
     
-    return JsonResponse(errors_data, safe=False) if not data['reload'] else errors_data
+    return errors_data

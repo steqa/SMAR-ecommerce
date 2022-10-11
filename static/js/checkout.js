@@ -39,21 +39,19 @@ function submitFormData(reload) {
         })
 
         .then((data) => {
-            updateFormFieldsStatus(data)
-
-            if (reload) {
-                if (data['validation_error'] == false) {
-                    if (user == 'AnonymousUser') {
-                        cart = {}
-                        document.cookie = 'cart=' + JSON.stringify(cart) + ';domain=;path=/'
-                        alert('Payment complete!')
-                        window.location.replace(storeUrl)
-                    } else {
-                        alert('Payment complete!')
-                        window.location.replace(storeUrl)
-                    }
+            console.log('reload')
+            if (data['reload'] == true) {
+                if (user == 'AnonymousUser') {
+                    cart = {}
+                    document.cookie = 'cart=' + JSON.stringify(cart) + ';domain=;path=/'
+                    alert('Payment complete!')
+                    window.location.replace(storeUrl)
+                } else {
+                    alert('Payment complete!')
+                    window.location.replace(storeUrl)
                 }
             }
+            updateFormFieldsStatus(data)
         })
 }
 
@@ -75,6 +73,7 @@ function getFormData() {
     if (user == 'AnonymousUser') {
         userInfo.fio = checkoutForm.fio.value
         userInfo.email = checkoutForm.email.value
+        userInfo.username = checkoutForm.email.value
         userInfo.password1 = checkoutForm.password1.value
         userInfo.password2 = checkoutForm.password2.value
     }
