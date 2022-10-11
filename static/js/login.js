@@ -56,6 +56,12 @@ function getFormData() {
 }
 
 function updateFormFieldsStatus(data) {
+    for (error in data['errors']) {
+        if (data['errors'][error] == '&bull;&nbsp;Обязательное поле.') {
+            data['error_fields'].splice(data['error_fields'].indexOf(error), 1)
+        }
+    }
+
     formFields.forEach((element) => {
         invalidFeedbackBlock = element.closest('.form-floating').querySelector('.invalid-feedback')
         if (data['error_fields'].includes(element.getAttribute('name'))) {

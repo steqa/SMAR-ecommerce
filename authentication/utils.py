@@ -3,10 +3,12 @@ from django.contrib.auth import authenticate
 from .models import CustomUser
 
 
-def login_form_validation(request, data, email, password):
+def login_form_validation(request, email, password):
+    fields = ['email', 'password']
     errors = {}
     error_fields = []
     success_fields = []
+    validation_error = False
 
     if email != '':
         if not CustomUser.objects.filter(email=email).exists():
@@ -26,23 +28,19 @@ def login_form_validation(request, data, email, password):
             success_fields.append('password')
             validation_error = False
     
-    if email == '' or password == '':
-        validation_error = True
-        
     errors_data = {
         'errors': errors,
         'error_fields': error_fields,
         'success_fields': success_fields,
         'validation_error': validation_error,
-        'reload': False,
     }
     
-    return JsonResponse(errors_data, safe=False) if not data['reload'] else errors_data
+    return errors_data
 
 
 def register_user_form_validation(user):
-    errors = {}
     fields = ['fio', 'email', 'username', 'password1', 'password2']
+    errors = {}
     error_fields = []
     success_fields = []
     validation_error = False

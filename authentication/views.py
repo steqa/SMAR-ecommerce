@@ -13,29 +13,14 @@ def login_user(request):
         data = json.loads(request.body)
         email = data['loginInfo']['email']
         password = data['loginInfo']['password']
-        
+        validation_data = login_form_validation(request, email, password)
         if data['reload'] is False:
-            return login_form_validation(request, data, email, password)
+            return JsonResponse(validation_data, safe=True)
         else:
-            validation_data = login_form_validation(request, data, email, password)
-            errors = validation_data['errors']
-            error_fields = validation_data['error_fields']
-            success_fields = validation_data['success_fields']
-            validation_error = validation_data['validation_error']
-            user = authenticate(request, email=email, password=password)
-            if user is not None:
+            if validation_data['validation_error'] is False:
+                user = authenticate(request, email=email, password=password)
                 login(request, user)
-                reload = True
-            else:
-                reload = False
-            
-            return JsonResponse({
-                'errors': errors,
-                'error_fields': error_fields,
-                'success_fields': success_fields,
-                'validation_error': validation_error,
-                'reload': reload,
-            }, safe=False)
+            return JsonResponse({'reload': True}, safe=True)
         
     context = {}
     return render(request, 'authentication/login.html', context)
@@ -49,7 +34,6 @@ def register_user(request):
         if data['reload'] is False:
             return JsonResponse(validation_data, safe=True)
         else:
-            print(validation_data['errors'])
             if validation_data['validation_error'] is False:
                 user = user.save()
                 login(request, user)
