@@ -1,4 +1,5 @@
 {% extends 'authentication/base.html' %}
+{% load static %}
 
 {% block title %}
 Вход
@@ -17,7 +18,7 @@
         </div>
         <div>
             <div class="form-floating">
-                <input type="text" class="form-control" name="password" placeholder="Пароль" autocomplete="new-password" onfocus="this.setAttribute('type', 'password');">
+                <input type="password" class="form-control" name="password" placeholder="Пароль" autocomplete="new-password">
                 <label>Пароль</label>
                 <div class="invalid-feedback"></div>
             </div>
@@ -26,11 +27,9 @@
 
     <button class="w-100 btn btn-primary btn-lg" id="loginBtn">Войти</button>
     <p class="text-center my-2 text-secondary">или</p>
-    <a class="w-100 btn btn-outline-primary btn-lg" id="registerBtn" href="{% url 'register-user' %}">Зарегистрироваться</a>
+    <a class="w-100 btn btn-outline-primary btn-lg" href="{% url 'register-user' %}">Зарегистрироваться</a>
 </form>
 
-<script>
-    const storeUrl = '{% url "store" %}'
-</script>
+<script src="{% static 'js/login.js' %}"></script>
 
 {% endblock %}

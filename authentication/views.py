@@ -1,8 +1,11 @@
 import json
+from urllib.parse import urlencode
+from django.http import QueryDict
 from django.http.response import JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.contrib.auth import authenticate, login
-from .utils import login_form_validation
+from .utils import login_form_validation, register_user_form_validation
+from .forms import CustomUserCreationForm
 
 
 def login_user(request):
@@ -39,5 +42,18 @@ def login_user(request):
 
 
 def register_user(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        user = CustomUserCreationForm(QueryDict(urlencode(data['registrationInfo'])))
+        validation_data = register_user_form_validation(user)
+        if data['reload'] is False:
+            return JsonResponse(validation_data, safe=True)
+        else:
+            print(validation_data['errors'])
+            if validation_data['validation_error'] is False:
+                user = user.save()
+                login(request, user)
+                return JsonResponse({'reload': True}, safe=True)
+        
     context = {}
     return render(request, 'authentication/registration.html', context)

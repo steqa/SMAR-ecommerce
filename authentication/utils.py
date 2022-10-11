@@ -38,3 +38,30 @@ def login_form_validation(request, data, email, password):
     }
     
     return JsonResponse(errors_data, safe=False) if not data['reload'] else errors_data
+
+
+def register_user_form_validation(user):
+    errors = {}
+    fields = ['fio', 'email', 'username', 'password1', 'password2']
+    error_fields = []
+    success_fields = []
+    validation_error = False
+    
+    if user.errors:
+        for field in user.errors:
+            errors[field] = user.errors[field].as_text().replace('* ', '&bull;&nbsp;').replace('\n', '<br>')
+            error_fields.append(field)
+        validation_error = True
+        
+    for f in fields:
+        if f not in error_fields:
+            success_fields.append(f)
+            
+    errors_data = {
+        'errors': errors,
+        'error_fields': error_fields,
+        'success_fields': success_fields,
+        'validation_error': validation_error,
+    }
+
+    return errors_data

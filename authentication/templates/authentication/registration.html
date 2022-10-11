@@ -1,4 +1,5 @@
 {% extends 'authentication/base.html' %}
+{% load static %}
 
 {% block title %}
 Регистрация
@@ -6,19 +7,12 @@
 
 {% block content %}
 <h3 class="text-center mb-3">Регистрация</h3>
-<form id="loginForm">
+<form id="registrationForm">
     <div class="row g-3 mb-4">
         <div>
             <div class="form-floating">
-                <input type="text" class="form-control" name="first_name" placeholder="Имя">
-                <label>Имя</label>
-                <div class="invalid-feedback"></div>
-            </div>
-        </div>
-        <div>
-            <div class="form-floating">
-                <input type="text" class="form-control" name="last_name" placeholder="Фамилия">
-                <label>Фамилия</label>
+                <input type="text" class="form-control" name="fio" placeholder="Имя">
+                <label>Ф И О</label>
                 <div class="invalid-feedback"></div>
             </div>
         </div>
@@ -31,21 +25,14 @@
         </div>
         <div>
             <div class="form-floating">
-                <input type="text" class="form-control" name="username" placeholder="Логин">
-                <label>Логин</label>
-                <div class="invalid-feedback"></div>
-            </div>
-        </div>
-        <div>
-            <div class="form-floating">
-                <input type="text" class="form-control" name="password1" placeholder="Пароль" autocomplete="new-password" onfocus="this.setAttribute('type', 'password');">
+                <input type="password" class="form-control" name="password1" placeholder="Пароль" autocomplete="new-password">
                 <label>Пароль</label>
                 <div class="invalid-feedback"></div>
             </div>
         </div>
         <div>
             <div class="form-floating">
-                <input type="text" class="form-control" name="password2" placeholder="Повтор пароля" autocomplete="new-password" onfocus="this.setAttribute('type', 'password');">
+                <input type="password" class="form-control" name="password2" placeholder="Повтор пароля" autocomplete="new-password">
                 <label>Повтор пароля</label>
                 <div class="invalid-feedback"></div>
             </div>
@@ -55,7 +42,9 @@
 
     <button class="w-100 btn btn-primary btn-lg" id="registerBtn">Зарегистрироваться</button>
     <p class="text-center my-2 text-secondary">или</p>
-    <a class="w-100 btn btn-outline-primary btn-lg" id="loginBtn" href="{% url 'login-user' %}">Войти</a>
+    <a class="w-100 btn btn-outline-primary btn-lg" href="{% url 'login-user' %}">Войти</a>
 </form>
+
+<script src="{% static 'js/registration.js' %}"></script>
 
 {% endblock %}
