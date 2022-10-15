@@ -50,7 +50,7 @@ class OrderItem(models.Model):
     
 class ShippingAddress(models.Model):
     customer = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
-    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True)
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True, related_name="shippingaddress")
     address = models.CharField(max_length=200)
     city = models.CharField(max_length=200)
     country = models.CharField(max_length=200)

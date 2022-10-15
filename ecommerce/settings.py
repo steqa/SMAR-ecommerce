@@ -41,6 +41,7 @@ INSTALLED_APPS = [
 
     'store.apps.StoreConfig',
     'authentication.apps.AuthenticationConfig',
+    'sales_dashboard.apps.SalesDashboardConfig',
 ]
 
 MIDDLEWARE = [
