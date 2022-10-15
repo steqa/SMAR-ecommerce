@@ -6,8 +6,10 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from .utils import login_form_validation, register_user_form_validation
 from .forms import CustomUserCreationForm
+from .decorators import unathenticated_user
 
 
+@unathenticated_user
 def login_user(request):
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -26,6 +28,7 @@ def login_user(request):
     return render(request, 'authentication/login.html', context)
 
 
+@unathenticated_user
 def register_user(request):
     if request.method == 'POST':
         data = json.loads(request.body)
