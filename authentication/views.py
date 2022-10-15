@@ -2,8 +2,8 @@ import json
 from urllib.parse import urlencode
 from django.http import QueryDict
 from django.http.response import JsonResponse
-from django.shortcuts import render
-from django.contrib.auth import authenticate, login
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login, logout
 from .utils import login_form_validation, register_user_form_validation
 from .forms import CustomUserCreationForm
 
@@ -41,3 +41,8 @@ def register_user(request):
         
     context = {}
     return render(request, 'authentication/registration.html', context)
+
+
+def logout_user(request):
+    logout(request)
+    return redirect('login-user')
