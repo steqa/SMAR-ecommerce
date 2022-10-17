@@ -12,9 +12,9 @@
     <div class="card shadow-sm mb-4">
         <div class="d-flex justify-content-center align-items-center">
             <button class="btn btn-primary m-3">Все</button>
-            <button class="btn btn-outline-primary m-3">Неотправленные</button>
-            <button class="btn btn-outline-primary m-3">Доставляются</button>
-            <button class="btn btn-outline-primary m-3">Выполненные</button>
+            <button class="btn btn-outline-primary m-3">Ожидает отправки</button>
+            <button class="btn btn-outline-primary m-3">Отправлен</button>
+            <button class="btn btn-outline-primary m-3">Выполнен</button>
         </div>
     </div>
 
@@ -37,7 +37,7 @@
                 <td>{{ shippingaddress.city }}</td>
                 <td>{{ shippingaddress.order.get_total_order_price|floatformat:"-2g" }}<span class="ms-1">₽</span></td>
                 <td>{{ shippingaddress.order.date_ordered|date:"d.m.Y G:i:s" }}</td>
-                <td>{{ shippingaddress.order.complete }}</td>
+                <td>{{ shippingaddress.order.get_status_display }}</td>
             </tr>
             {% endfor %}
         </tbody>

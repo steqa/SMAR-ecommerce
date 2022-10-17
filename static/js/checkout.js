@@ -2,20 +2,22 @@ const paymentBtn = document.getElementById('paymentBtn')
 const checkoutForm = document.getElementById('checkoutForm')
 const formFields = document.querySelectorAll('.form-control')
 
+let reload = false
+
 formFields.forEach((element) => {
     element.addEventListener('input', function (e) {
-        const reload = false
-        submitFormData(reload)
+        reload = false
+        submitFormData()
     })
 })
 
 paymentBtn.addEventListener('click', function (element) {
     element.preventDefault()
-    const reload = true
-    submitFormData(reload)
+    reload = true
+    submitFormData()
 })
 
-function submitFormData(reload) {
+function submitFormData() {
     const shippingInfo = getFormData()['shippingInfo']
     const userInfo = getFormData()['userInfo']
 
@@ -39,7 +41,6 @@ function submitFormData(reload) {
         })
 
         .then((data) => {
-            console.log('reload')
             if (data['reload'] == true) {
                 if (user == 'AnonymousUser') {
                     cart = {}
@@ -77,7 +78,7 @@ function getFormData() {
         userInfo.password1 = checkoutForm.password1.value
         userInfo.password2 = checkoutForm.password2.value
     }
-    
+
     shippingInfo.address = checkoutForm.address.value
     shippingInfo.city = checkoutForm.city.value
     shippingInfo.country = checkoutForm.country.value
@@ -87,9 +88,11 @@ function getFormData() {
 }
 
 function updateFormFieldsStatus(data) {
-    for (error in data['errors']) {
-        if (data['errors'][error] == '&bull;&nbsp;Обязательное поле.') {
-            data['error_fields'].splice(data['error_fields'].indexOf(error), 1)
+    if (reload == false) { 
+        for (error in data['errors']) {
+            if (data['errors'][error] == '&bull;&nbsp;Обязательное поле.') {
+                data['error_fields'].splice(data['error_fields'].indexOf(error), 1)
+            }
         }
     }
 

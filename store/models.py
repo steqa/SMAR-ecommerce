@@ -12,9 +12,15 @@ class Product(models.Model):
 
 
 class Order(models.Model):
+    ORDER_STATUSES = [
+        (False, 'Не оформлен'),
+        ('1', 'Ожидает отправки'),
+        ('2', 'Отправлен'),
+        ('3', 'Выполнен'),
+    ]
     customer = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
     date_ordered = models.DateTimeField(auto_now_add=True)
-    complete = models.BooleanField(default=False)
+    status = models.CharField(max_length=16, choices=ORDER_STATUSES, default=False)
     transaction_id = models.CharField(max_length=200)
 
     def __str__(self) -> str:

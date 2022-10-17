@@ -59,7 +59,7 @@ def update_order(request):
     product = Product.objects.get(id=product_id)
     
     if request.user.is_authenticated:
-        order, created = Order.objects.get_or_create(customer=request.user, complete=False)
+        order, created = Order.objects.get_or_create(customer=request.user, status=False)
         order_item, created = OrderItem.objects.get_or_create(order=order, product=product)
         
         if action == 'add':
@@ -110,12 +110,12 @@ def place_order(request):
     
         if request.user.is_authenticated:
             customer = request.user
-            order, created = Order.objects.get_or_create(customer=customer, complete=False)
+            order, created = Order.objects.get_or_create(customer=customer, status=False)
         else:
             customer, order = guest_place_order(request, data)
         
         if total_order_price == float(order.get_total_order_price):
-            order.complete = True
+            order.status = '1'
             order.transaction_id = transaction_id
             ShippingAddress.objects.create(
                 customer=customer,
@@ -128,3 +128,6 @@ def place_order(request):
         
         order.save()
         return JsonResponse({'reload': True}, safe=True)
+    else:
+        print(validation_data)
+        return JsonResponse(validation_data, safe=True)
