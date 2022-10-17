@@ -1,4 +1,5 @@
 {% extends 'sales_dashboard/base.html' %}
+{% load static %}
 
 {% block title %}
 Заказы
@@ -11,10 +12,10 @@
 
     <div class="card shadow-sm mb-4">
         <div class="d-flex justify-content-center align-items-center">
-            <button class="btn btn-primary m-3">Все</button>
-            <button class="btn btn-outline-primary m-3">Ожидает отправки</button>
-            <button class="btn btn-outline-primary m-3">Отправлен</button>
-            <button class="btn btn-outline-primary m-3">Выполнен</button>
+            <button class="btn btn-primary m-3 statusFilterBtn" data>Все</button>
+            <button class="btn btn-outline-primary m-3 statusFilterBtn">Ожидает отправки</button>
+            <button class="btn btn-outline-primary m-3 statusFilterBtn">Отправлен</button>
+            <button class="btn btn-outline-primary m-3 statusFilterBtn">Выполнен</button>
         </div>
     </div>
 
@@ -22,26 +23,24 @@
         <thead>
             <tr>
                 <th scope="col">ФИО</th>
-                <th scope="col">Страна</th>
-                <th scope="col">Город</th>
                 <th scope="col">Всего</th>
                 <th scope="col">Дата</th>
                 <th scope="col">Статус</th>
             </tr>
         </thead>
         <tbody>
-            {% for shippingaddress in shippingaddresses %}
+            {% for order in orders %}
             <tr>
-                <td>{{ shippingaddress.order.customer.fio }}</td>
-                <td>{{ shippingaddress.country }}</td>
-                <td>{{ shippingaddress.city }}</td>
-                <td>{{ shippingaddress.order.get_total_order_price|floatformat:"-2g" }}<span class="ms-1">₽</span></td>
-                <td>{{ shippingaddress.order.date_ordered|date:"d.m.Y G:i:s" }}</td>
-                <td>{{ shippingaddress.order.get_status_display }}</td>
+                <td>{{ order.customer.fio }}</td>
+                <td>{{ order.get_total_order_price|floatformat:"-2g" }}<span class="ms-1">₽</span></td>
+                <td>{{ order.date_ordered|date:"d.m.Y G:i:s" }}</td>
+                <td>{{ order.get_status_display }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 
 </div>
+
+<script src="{% static 'js/sales_dashboard/orders.js' %}"></script>
 {% endblock %}

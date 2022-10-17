@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from store.models import ShippingAddress
+from store.models import Order
 
 
 def dashboard(request):
@@ -7,8 +7,8 @@ def dashboard(request):
 
 
 def orders(request):
-    shippingaddresses = ShippingAddress.objects.all()
+    orders = Order.objects.exclude(status=False)
     context = {
-        'shippingaddresses': shippingaddresses,
+        'orders': orders,
     }
     return render(request, 'sales_dashboard/orders.html', context)

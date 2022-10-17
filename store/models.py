@@ -24,7 +24,7 @@ class Order(models.Model):
     transaction_id = models.CharField(max_length=200)
 
     def __str__(self) -> str:
-        return f'{self.customer.fio} {self.transaction_id}'
+        return f'{self.customer} - {self.transaction_id}'
     
     @property
     def get_total_order_price(self):
@@ -46,7 +46,7 @@ class OrderItem(models.Model):
     date_added = models.DateTimeField(auto_now_add=True)
     
     def __str__(self) -> str:
-        return f'{self.order.customer.fio} - {self.product}'
+        return f'{self.order} - {self.product}'
     
     @property
     def get_total_items_price(self):
@@ -64,4 +64,4 @@ class ShippingAddress(models.Model):
     date_added = models.DateTimeField(auto_now_add=True)
     
     def __str__(self) -> str:
-        return f'{self.customer.fio} {self.order.transaction_id}'
+        return f'{self.order} - {self.country}, {self.city}, {self.address}'
