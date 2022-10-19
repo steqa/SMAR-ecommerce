@@ -10,20 +10,50 @@
 {% block content %}
 <div class="my-4">
 
-    <div class="card shadow-sm mb-4">
-        <div class="d-flex justify-content-center align-items-center">
-            <button class="btn btn-primary m-3 statusFilterBtn" data>Все</button>
-            <button class="btn btn-outline-primary m-3 statusFilterBtn">Ожидает отправки</button>
-            <button class="btn btn-outline-primary m-3 statusFilterBtn">Отправлен</button>
-            <button class="btn btn-outline-primary m-3 statusFilterBtn">Выполнен</button>
+    <div class="card shadow-sm mb-4 p-4">
+        <div>
+            <form id="filterForm">
+                <div class="row g-3">
+                    <div class="col-md-11 col-10">
+                        <div class="row g-3">
+                            <div class="col-3">
+                                <input type="text" class="form-control" name="transaction_id" placeholder="ID заказа">
+                            </div>
+                            <div class="col-3">
+                                <input type="text" class="form-control" name="email" placeholder="Email">
+                            </div>
+                            <div class="col-3">
+                                <input type="text" class="form-control" name="date_ordered" placeholder="Дата">
+                            </div>
+                            <div class="col-3">
+                                <select class="form-select" name="status" placeholder="Статус" aria-label="Default select example">
+                                    <option selected value>Статус</option>
+                                    <option value="1">Ожидает отправки</option>
+                                    <option value="2">Отправлен</option>
+                                    <option value="3">Выполнен</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-1 col-2">
+                        <button class="btn btn-outline-primary w-100" id="filterBtn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-search" viewBox="0 0 16 17">
+                                <path
+                                    d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 
     <table class="table table-hover shadow-sm border">
         <thead>
             <tr>
-                <th scope="col">ФИО</th>
-                <th scope="col">Всего</th>
+                <th scope="col">ID заказа</th>
+                <th scope="col">Email</th>
                 <th scope="col">Дата</th>
                 <th scope="col">Статус</th>
             </tr>
@@ -31,8 +61,8 @@
         <tbody>
             {% for order in orders %}
             <tr>
-                <td>{{ order.customer.fio }}</td>
-                <td>{{ order.get_total_order_price|floatformat:"-2g" }}<span class="ms-1">₽</span></td>
+                <td>{{ order.transaction_id }}</td>
+                <td>{{ order.customer }}</td>
                 <td>{{ order.date_ordered|date:"d.m.Y G:i:s" }}</td>
                 <td>{{ order.get_status_display }}</td>
             </tr>
