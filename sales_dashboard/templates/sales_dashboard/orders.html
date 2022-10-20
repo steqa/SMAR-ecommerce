@@ -12,31 +12,35 @@
 
     <div class="card shadow-sm mb-4 p-4">
         <div>
-            <form id="filterForm">
+            <form id="filterForm" method="get">
                 <div class="row g-3">
-                    <div class="col-md-11 col-10">
-                        <div class="row g-3">
-                            <div class="col-3">
-                                <input type="text" class="form-control" name="transaction_id" placeholder="ID заказа">
-                            </div>
-                            <div class="col-3">
-                                <input type="text" class="form-control" name="email" placeholder="Email">
-                            </div>
-                            <div class="col-3">
-                                <input type="text" class="form-control" name="date_ordered" placeholder="Дата">
-                            </div>
-                            <div class="col-3">
-                                <select class="form-select" name="status" placeholder="Статус" aria-label="Default select example">
-                                    <option selected value>Статус</option>
-                                    <option value="1">Ожидает отправки</option>
-                                    <option value="2">Отправлен</option>
-                                    <option value="3">Выполнен</option>
-                                </select>
-                            </div>
-                        </div>
+                    <div class="col-6">
+                        <div class="form-text my-0">ID заказа</div>
+                        <input type="text" class="form-control" name="transaction_id" placeholder="...">
                     </div>
-                    <div class="col-md-1 col-2">
-                        <button class="btn btn-outline-primary w-100" id="filterBtn">
+                    <div class="col-6">
+                        <div class="form-text my-0">Email</div>
+                        <input type="text" class="form-control" name="email" placeholder="...">
+                    </div>
+                    <div class="col-3">
+                        <div class="form-text my-0">Минимальная дата</div>
+                        <input type="date" class="form-control" name="date_ordered_start">
+                    </div>
+                    <div class="col-3">
+                        <div class="form-text my-0">Максимальная дата</div>
+                        <input type="date" class="form-control" name="date_ordered_end">
+                    </div>
+                    <div class="col-6">
+                        <div class="form-text my-0">Статус</div>
+                        <select class="form-select" name="status" aria-label="Default select example">
+                            <option selected value>...</option>
+                            <option value="1">Ожидает отправки</option>
+                            <option value="2">Отправлен</option>
+                            <option value="3">Выполнен</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <button class="btn btn-outline-primary w-100" id="filterBtn" type="submit">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-search" viewBox="0 0 16 17">
                                 <path
@@ -58,7 +62,7 @@
                 <th scope="col">Статус</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="orders">
             {% for order in orders %}
             <tr>
                 <td>{{ order.transaction_id }}</td>

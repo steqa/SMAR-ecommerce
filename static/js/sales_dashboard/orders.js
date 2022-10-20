@@ -1,13 +1,29 @@
-const statusFilterBtn = document.querySelectorAll(".statusFilterBtn")
+const filterBtn = document.getElementById("filterBtn")
+const filterForm = document.getElementById('filterForm')
+const orders = document.getElementById('orders')
 
-console.log(statusFilterBtn)
-statusFilterBtn.forEach(function (element) {
-    element.addEventListener("click", function (e) {
-        statusFilterBtn.forEach(function (item) {
-            item.classList.remove('btn-primary')
-            item.classList.add('btn-outline-primary')
-        })
-        element.classList.remove('btn-outline-primary')
-        element.classList.add('btn-primary')
-    })
+filterBtn.addEventListener("click", function (element) {
+    element.preventDefault()
+    submitFormData()
 })
+
+function submitFormData() {
+    const url = '/dashboard/orders-filter/' + 
+    '?transaction_id=' + filterForm.transaction_id.value + 
+    '&email=' + filterForm.email.value +
+    '&date_ordered_start=' + filterForm.date_ordered_start.value + 
+    '&date_ordered_end=' + filterForm.date_ordered_end.value + 
+    '&status=' + filterForm.status.value
+    fetch(url, {
+    })
+
+        .then((response) => {
+            return response.json()
+        })
+
+        .then((data) => {
+            console.log(data)
+            orders.innerHTML=data
+            // updateFormFieldsStatus(data)
+        })
+}
