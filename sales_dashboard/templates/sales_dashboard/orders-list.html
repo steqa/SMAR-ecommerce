@@ -1,0 +1,8 @@
+{% for order in orders %}
+<tr>
+    <td>{{ order.transaction_id }}</td>
+    <td>{{ order.customer }}</td>
+    <td>{{ order.date_ordered|date:"m.d.Y G:i:s" }}</td>
+    <td>{{ order.get_status_display }}</td>
+</tr>
+{% endfor %}

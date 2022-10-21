@@ -24,29 +24,20 @@
                     </div>
                     <div class="col-3">
                         <div class="form-text my-0">Минимальная дата</div>
-                        <input type="date" class="form-control" name="date_ordered_start">
+                        <input type="date" class="form-control" name="date_ordered_min">
                     </div>
                     <div class="col-3">
                         <div class="form-text my-0">Максимальная дата</div>
-                        <input type="date" class="form-control" name="date_ordered_end">
+                        <input type="date" class="form-control" name="date_ordered_max">
                     </div>
                     <div class="col-6">
                         <div class="form-text my-0">Статус</div>
-                        <select class="form-select" name="status" aria-label="Default select example">
+                        <select class="form-control form-select" name="status" aria-label="Default select example">
                             <option selected value>...</option>
                             <option value="1">Ожидает отправки</option>
                             <option value="2">Отправлен</option>
                             <option value="3">Выполнен</option>
                         </select>
-                    </div>
-                    <div class="col-12">
-                        <button class="btn btn-outline-primary w-100" id="filterBtn" type="submit">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-search" viewBox="0 0 16 17">
-                                <path
-                                    d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-                            </svg>
-                        </button>
                     </div>
                 </div>
             </form>
@@ -63,14 +54,7 @@
             </tr>
         </thead>
         <tbody id="orders">
-            {% for order in orders %}
-            <tr>
-                <td>{{ order.transaction_id }}</td>
-                <td>{{ order.customer }}</td>
-                <td>{{ order.date_ordered|date:"d.m.Y G:i:s" }}</td>
-                <td>{{ order.get_status_display }}</td>
-            </tr>
-            {% endfor %}
+            {% include 'sales_dashboard/orders-list.html' %}
         </tbody>
     </table>
 
