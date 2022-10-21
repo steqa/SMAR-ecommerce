@@ -1,4 +1,6 @@
+import json
 from django.http.response import JsonResponse
+from django.template.defaultfilters import date
 from django.template.loader import render_to_string
 from django.shortcuts import render
 from store.models import Order
@@ -18,6 +20,27 @@ def orders(request):
         'orders': orders,
     }
     return render(request, 'sales_dashboard/orders.html', context)
+
+@allowed_users(allowed_roles=['seller'])
+def order(request, pk):
+    order = Order.objects.get(pk=pk)
+    order_items = order.orderitem_set.all()
+    shipping_address = order.shippingaddress_set.get()
+    if request.method == 'POST':
+        status = json.loads(request.body)['status']
+        if status == '1' or status == '2' or status == '3':
+            order.status = status
+            order.save()
+            date_updated = date(order.date_updated, 'm/d/Y G:i:s')
+            
+        return JsonResponse({'status': status, 'date_updated': date_updated}, safe=True)
+    
+    context = {
+        'order': order,
+        'order_items': order_items,
+        'shipping_address': shipping_address,
+    }
+    return render(request, 'sales_dashboard/order-detail.html', context)
 
 
 def orders_filter(request):

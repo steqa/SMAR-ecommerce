@@ -129,5 +129,4 @@ def place_order(request):
         order.save()
         return JsonResponse({'reload': True}, safe=True)
     else:
-        print(validation_data)
         return JsonResponse(validation_data, safe=True)

@@ -20,6 +20,7 @@ class Order(models.Model):
     ]
     customer = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
     date_ordered = models.DateTimeField(auto_now_add=True)
+    date_updated = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=16, choices=ORDER_STATUSES, default=False)
     transaction_id = models.CharField(max_length=200)
 
@@ -56,7 +57,7 @@ class OrderItem(models.Model):
     
 class ShippingAddress(models.Model):
     customer = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
-    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True, related_name="shippingaddress")
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True)
     address = models.CharField(max_length=200)
     city = models.CharField(max_length=200)
     country = models.CharField(max_length=200)
