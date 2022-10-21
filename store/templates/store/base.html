@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 {% load static %}
-{% load custom_tags %}
 <html lang="en">
 
 <head>
@@ -66,7 +65,7 @@
                     {% else %}
                     <div class="btn-group">
                         <button type="button" class="btn btn-link dropdown-toggle rounded-4 text-white text-decoration-none me-4" data-bs-toggle="dropdown" aria-expanded="false">
-                            {{ request.user|email_username }}
+                            {{ request.user }}
                         </button>
                         <ul class="dropdown-menu dropdown-menu-md-end me-4">
                           <li><button class="dropdown-item" type="button">Профиль</button></li>

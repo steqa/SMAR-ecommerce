@@ -3,12 +3,15 @@ from django.template.loader import render_to_string
 from django.shortcuts import render
 from store.models import Order
 from .utils import is_valid_queryparam
+from authentication.decorators import allowed_users
 
 
+@allowed_users(allowed_roles=['seller'])
 def dashboard(request):
     return render(request, 'sales_dashboard/dashboard.html')
 
 
+@allowed_users(allowed_roles=['seller'])
 def orders(request):
     orders = Order.objects.exclude(status=False)
     context = {
