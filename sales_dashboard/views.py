@@ -4,7 +4,7 @@ from django.template.defaultfilters import date
 from django.template.loader import render_to_string
 from django.shortcuts import render
 from store.models import Order
-from .utils import is_valid_queryparam
+from .utils import is_valid_queryparam, is_valid_sortparam
 from authentication.decorators import allowed_users
 
 
@@ -66,6 +66,35 @@ def orders_filter(request):
         
     if is_valid_queryparam(status):
         orders = orders.filter(status=status)
+        
+    sort_transaction_id = request.GET.get('sort_transaction_id')
+    sort_email = request.GET.get('sort_email')
+    sort_date_ordered = request.GET.get('sort_date_ordered')
+    sort_status = request.GET.get('sort_status')
+    
+    if is_valid_sortparam(sort_transaction_id):
+        if sort_transaction_id == '1':
+            orders = orders.order_by('-transaction_id')
+        elif sort_transaction_id == '2':
+            orders = orders.order_by('transaction_id')
+    
+    if is_valid_sortparam(sort_email):
+        if sort_email == '1':
+            orders = orders.order_by('-customer')
+        elif sort_email == '2':
+            orders = orders.order_by('customer')
+    
+    if is_valid_sortparam(sort_date_ordered):
+        if sort_date_ordered == '1':
+            orders = orders.order_by('-date_ordered')
+        elif sort_date_ordered == '2':
+            orders = orders.order_by('date_ordered')
+    
+    if is_valid_sortparam(sort_status):
+        if sort_status == '1':
+            orders = orders.order_by('-status')
+        elif sort_date_ordered == '2':
+            orders = orders.order_by('status')
     
     context = {
         'orders': orders,

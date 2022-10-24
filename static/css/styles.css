@@ -14,7 +14,16 @@
 }
 
 .not-select {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
     user-select: none;
+}
+
+.hide {
+    display: none;
 }
 
 .link-hover {
@@ -41,6 +50,7 @@
 .danger-input {
     border: 1px solid rgb(220, 53, 69);
 }
+
 .danger-input:focus {
     border: 1px solid rgb(220, 53, 69);
     box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
@@ -49,6 +59,7 @@
 .warning-input {
     border: 1px solid rgb(255, 193, 7);
 }
+
 .warning-input:focus {
     border: 1px solid rgb(255, 193, 7);
     box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25);
@@ -57,6 +68,7 @@
 .success-input {
     border: 1px solid rgb(25, 135, 84);
 }
+
 .success-input:focus {
     border: 1px solid rgb(25, 135, 84);
     box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);

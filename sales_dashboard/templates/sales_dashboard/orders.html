@@ -22,15 +22,15 @@
                         <div class="form-text my-0">Email</div>
                         <input type="text" class="form-control" name="email" placeholder="...">
                     </div>
-                    <div class="col-3">
+                    <div class="col-md-3 col-6">
                         <div class="form-text my-0">Минимальная дата</div>
                         <input type="date" class="form-control" name="date_ordered_min">
                     </div>
-                    <div class="col-3">
+                    <div class="col-md-3 col-6">
                         <div class="form-text my-0">Максимальная дата</div>
                         <input type="date" class="form-control" name="date_ordered_max">
                     </div>
-                    <div class="col-6">
+                    <div class="col-md-6 col-12">
                         <div class="form-text my-0">Статус</div>
                         <select class="form-control form-select" name="status" aria-label="Default select example">
                             <option selected value>...</option>
@@ -47,10 +47,40 @@
     <table class="table table-hover shadow-sm border">
         <thead>
             <tr>
-                <th scope="col">ID заказа</th>
-                <th scope="col">Email</th>
-                <th scope="col">Дата</th>
-                <th scope="col">Статус</th>
+                <form id="sortForm" method="get">
+                    <th scope="col">
+                        <input type="checkbox" id="sort_transaction_id" name="sort_transaction_id" class="sort-checkbox"
+                            style="display: none;" data-checkbox="0">
+                        <label for="sort_transaction_id" class="not-select pointer link-hover">ID заказа
+                            <i class="bi bi-caret-down-fill hide checkDown"></i>
+                            <i class="bi bi-caret-up-fill hide checkUp"></i>
+                        </label>
+                    </th>
+                    <th scope="col">
+                        <input type="checkbox" id="sort_email" class="sort-checkbox" style="display: none;"
+                            data-checkbox="0">
+                        <label for="sort_email" class="not-select pointer link-hover">Email
+                            <i class="bi bi-caret-down-fill hide checkDown"></i>
+                            <i class="bi bi-caret-up-fill hide checkUp"></i>
+                        </label>
+                    </th>
+                    <th scope="col">
+                        <input type="checkbox" id="sort_date_ordered" class="sort-checkbox" style="display: none;"
+                            data-checkbox="0">
+                        <label for="sort_date_ordered" class="not-select pointer link-hover">Дата
+                            <i class="bi bi-caret-down-fill hide checkDown"></i>
+                            <i class="bi bi-caret-up-fill hide checkUp"></i>
+                        </label>
+                    </th>
+                    <th scope="col">
+                        <input type="checkbox" id="sort_status" class="sort-checkbox" style="display: none;"
+                            data-checkbox="0">
+                        <label for="sort_status" class="not-select pointer link-hover">Статус
+                            <i class="bi bi-caret-down-fill hide checkDown"></i>
+                            <i class="bi bi-caret-up-fill hide checkUp"></i>
+                        </label>
+                    </th>
+                </form>
             </tr>
         </thead>
         <tbody id="orders">
