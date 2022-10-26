@@ -1,8 +1,18 @@
 const filterForm = document.getElementById('filterForm')
 const sortForm = document.getElementById('sortForm')
+
 const filterFields = document.querySelectorAll('.form-control')
 const sortFields = document.querySelectorAll('.sort-checkbox')
+const pageBtn = document.querySelectorAll('.page-link')
+
 const orders = document.getElementById('orders')
+
+window.onscroll = function () {
+    let posTop = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
+    if (posTop + window.innerHeight === document.documentElement.scrollHeight) {
+        submitFormData(document.getElementById('page'))
+    }
+}
 
 filterFields.forEach((element) => {
     element.addEventListener('input', function (e) {
@@ -14,7 +24,6 @@ filterFields.forEach((element) => {
 sortFields.forEach((element) => {
     element.addEventListener('input', function (e) {
         e.preventDefault()
-
 
         sortFields.forEach((field) => {
             if (field != element) {
@@ -43,8 +52,15 @@ sortFields.forEach((element) => {
     })
 })
 
-function submitFormData() {
-    const url = '/dashboard/orders-filter/' +
+pageBtn.forEach((element) => {
+    element.addEventListener('click', function (e) {
+        e.preventDefault()
+        submitFormData(element)
+    })
+})
+
+function submitFormData(page) {
+    let url = '/dashboard/orders-filter/' +
         '?transaction_id=' + filterForm.transaction_id.value +
         '&email=' + filterForm.email.value +
         '&date_ordered_min=' + filterForm.date_ordered_min.value +
@@ -54,6 +70,7 @@ function submitFormData() {
         '&sort_email=' + sortForm.sort_email.dataset.checkbox +
         '&sort_date_ordered=' + sortForm.sort_date_ordered.dataset.checkbox +
         '&sort_status=' + sortForm.sort_status.dataset.checkbox
+    if (page) { url += '&page=' + (Number(page.innerHTML) + 1) }
     fetch(url, {
     })
 
@@ -62,6 +79,13 @@ function submitFormData() {
         })
 
         .then((data) => {
-            orders.innerHTML = data['html']
+            console.log(data['paginated'])
+            if (data['paginated'] === true) {
+                orders.insertAdjacentHTML('beforeend', data['html'])
+                page.innerHTML = Number(page.innerHTML) + 1
+            } else if (data['paginated'] === false) { }
+            else {
+                orders.innerHTML = data['html']
+            }
         })
 }

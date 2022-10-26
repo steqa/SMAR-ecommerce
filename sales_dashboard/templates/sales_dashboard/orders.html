@@ -88,7 +88,28 @@
         </tbody>
     </table>
 
+    <section style="height: 200px;"></section>
+
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li class="page-item">
+                <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% for page in orders.paginator.page_range %}
+            <li class="page-item"><a class="page-link" href="?page={{ page }}">{{ page }}</a></li>
+            {% endfor %}
+            <li class="page-item">
+                <a class="page-link" href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
 </div>
 
+<div class="hide" id="page">{{ orders.number }}</div>
 <script src="{% static 'js/sales_dashboard/orders.js' %}"></script>
 {% endblock %}

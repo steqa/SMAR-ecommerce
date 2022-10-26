@@ -2,6 +2,7 @@ import json
 from django.http.response import JsonResponse
 from django.template.defaultfilters import date
 from django.template.loader import render_to_string
+from django.core.paginator import Paginator
 from django.shortcuts import render
 from store.models import Order
 from .utils import is_valid_queryparam, is_valid_sortparam
@@ -16,13 +17,14 @@ def dashboard(request):
 @allowed_users(allowed_roles=['seller'])
 def orders(request):
     orders = Order.objects.exclude(status=False)
+    page_orders = paginate_orders(request, orders)
     context = {
-        'orders': orders,
+        'orders': page_orders,
     }
     return render(request, 'sales_dashboard/orders.html', context)
 
 @allowed_users(allowed_roles=['seller'])
-def order(request, pk):
+def order_detail(request, pk):
     order = Order.objects.get(pk=pk)
     order_items = order.orderitem_set.all()
     shipping_address = order.shippingaddress_set.get()
@@ -96,10 +98,30 @@ def orders_filter(request):
         elif sort_date_ordered == '2':
             orders = orders.order_by('status')
     
+    page_orders = paginate_orders(request, orders)
+    if request.GET.get('page') and page_orders.has_next():
+        paginated = True
+    elif request.GET.get('page') and not page_orders.has_next():
+        paginated = False
+    else:
+        paginated = None
+        
     context = {
-        'orders': orders,
+        'orders': page_orders,
     }
-    
+    print(page_orders)
+    print(paginated)
     return JsonResponse({
       'html': render_to_string('sales_dashboard/orders-list.html', context, request),
+      'paginated': paginated,
     })
+    
+
+def paginate_orders(request, orders):
+    paginator = Paginator(orders, 10)
+    page_number = request.GET.get('page')
+    print(page_number)
+    page_orders = paginator.get_page(page_number)
+    for p in page_orders:
+        print(p)
+    return page_orders
