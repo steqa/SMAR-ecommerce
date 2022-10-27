@@ -18,8 +18,16 @@ def dashboard(request):
 def orders(request):
     orders = Order.objects.exclude(status=False)
     page_orders = paginate_orders(request, orders)
+    
+    if page_orders.paginator.num_pages == 1:
+        displayed_orders = page_orders.paginator.object_list.count()
+    else:
+        displayed_orders = 20
+    
     context = {
         'orders': page_orders,
+        'displayed_orders': displayed_orders,
+        'total_orders': page_orders.paginator.object_list.count()
     }
     return render(request, 'sales_dashboard/orders.html', context)
 
@@ -99,29 +107,43 @@ def orders_filter(request):
             orders = orders.order_by('status')
     
     page_orders = paginate_orders(request, orders)
-    if request.GET.get('page') and page_orders.has_next():
-        paginated = True
-    elif request.GET.get('page') and not page_orders.has_next():
-        paginated = False
+    page = request.GET.get('page')
+
+    if page:
+        page = int(page)
+        if page_orders.paginator.num_pages == 1:
+            show_next_page = None
+        elif page < page_orders.paginator.num_pages:
+            show_next_page = True
+        elif page >= page_orders.paginator.num_pages:
+            show_next_page = False
     else:
-        paginated = None
+        show_next_page = None
         
+    number_of_displayed = 20
+    
+    if page_orders.paginator.num_pages == 1:
+        displayed_orders = page_orders.paginator.object_list.count()
+    else:
+        if page < page_orders.paginator.num_pages and show_next_page is not False:
+            displayed_orders = number_of_displayed * int(page)
+        else:
+            displayed_orders = (number_of_displayed * int(page)) - ((page_orders.paginator.num_pages * number_of_displayed) - (page_orders.paginator.object_list.count()))
+
     context = {
         'orders': page_orders,
     }
-    print(page_orders)
-    print(paginated)
+    
     return JsonResponse({
       'html': render_to_string('sales_dashboard/orders-list.html', context, request),
-      'paginated': paginated,
+      'show_next_page': show_next_page,
+      'displayed_orders': displayed_orders,
+      'total_orders': page_orders.paginator.object_list.count()
     })
     
 
 def paginate_orders(request, orders):
-    paginator = Paginator(orders, 10)
+    paginator = Paginator(orders, 20)
     page_number = request.GET.get('page')
-    print(page_number)
     page_orders = paginator.get_page(page_number)
-    for p in page_orders:
-        print(p)
     return page_orders
