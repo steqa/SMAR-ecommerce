@@ -11,7 +11,12 @@ from authentication.decorators import allowed_users
 
 @allowed_users(allowed_roles=['seller'])
 def dashboard(request):
-    return render(request, 'sales_dashboard/dashboard.html')
+    orders = Order.objects.exclude(status=False)
+    
+    context = {
+        'orders': orders,
+    }
+    return render(request, 'sales_dashboard/dashboard.html', context)
 
 
 @allowed_users(allowed_roles=['seller'])
@@ -103,11 +108,12 @@ def orders_filter(request):
     if is_valid_sortparam(sort_status):
         if sort_status == '1':
             orders = orders.order_by('-status')
-        elif sort_date_ordered == '2':
+        elif sort_status == '2':
             orders = orders.order_by('status')
     
     page_orders = paginate_orders(request, orders)
     page = request.GET.get('page')
+    number_of_displayed = 20
 
     if page:
         page = int(page)
@@ -117,19 +123,15 @@ def orders_filter(request):
             show_next_page = True
         elif page >= page_orders.paginator.num_pages:
             show_next_page = False
-    else:
-        show_next_page = None
-        
-    number_of_displayed = 20
-    
-    if page_orders.paginator.num_pages == 1:
-        displayed_orders = page_orders.paginator.object_list.count()
-    else:
+            
         if page < page_orders.paginator.num_pages and show_next_page is not False:
             displayed_orders = number_of_displayed * int(page)
         else:
             displayed_orders = (number_of_displayed * int(page)) - ((page_orders.paginator.num_pages * number_of_displayed) - (page_orders.paginator.object_list.count()))
-
+    else:
+        show_next_page = None
+        displayed_orders = page_orders.paginator.object_list.count()
+        
     context = {
         'orders': page_orders,
     }

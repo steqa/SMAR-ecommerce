@@ -77,6 +77,7 @@ function submitFormData(paginate) {
         '&sort_date_ordered=' + sortForm.sort_date_ordered.dataset.checkbox +
         '&sort_status=' + sortForm.sort_status.dataset.checkbox
     if (paginate) { url += '&page=' + (Number(document.getElementById('page').innerHTML) + 1) }
+    
     fetch(url, {
     })
 

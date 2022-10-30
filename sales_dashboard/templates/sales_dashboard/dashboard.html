@@ -1,4 +1,5 @@
 {% extends 'sales_dashboard/base.html' %}
+{% load dashboard-tags %}
 
 {% block title %}
 Панель управления
@@ -7,4 +8,184 @@
 {% block active-dashboard %}active{% endblock %}
 
 {% block content %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="my-4">
+    <div class="row g-4 mb-4">
+        <div class="col-md-4 col-12">
+            <a href="" class="text-decoration-none text-dark">
+                <div class="card shadow-sm p-4 text-center">
+                    <h5>Ожидают</h5>
+                    <h3>{{ orders|get_orders_by_status:'1'|length }}</h3>
+                    <span class="text-black-50">за месяц</span>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 col-12">
+            <a href="" class="text-decoration-none text-dark">
+                <div class="card shadow-sm p-4 text-center">
+                    <h5>Отправлено</h5>
+                    <h3>{{ orders|get_orders_by_status:'2'|length }}</h3>
+                    <span class="text-black-50">за месяц</span>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 col-12">
+            <a href="" class="text-decoration-none text-dark">
+                <div class="card shadow-sm p-4 text-center">
+                    <h5>Выполнено</h5>
+                    <h3>{{ orders|get_orders_by_status:'3'|length }}</h3>
+                    <span class="text-black-50">за месяц</span>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xxl-9 col-12 mb-4">
+            <div class="row g-4">
+                <div class="col-lg-6 col-12">
+                    <h5 class="mb-3">Продажи</h5>
+                    <canvas id="orders"></canvas>
+                </div>
+
+                <div class="col-lg-6 col-12">
+                    <h5 class="mb-3">Выручка</h5>
+                    <canvas id="revenue"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xxl-3 col-12">
+            <div class="card shadow-sm p-4">
+                <h5 class="text-xxl-start text-center">Разница за период</h5>
+                <div class="my-3 row justify-content-xxl-start justify-content-center">
+                    <div class="col-xxl-12 col-6 text-xxl-start text-center">
+                        <h6>Продажи</h6>
+                        <h3>
+                            <i class="bi bi-caret-down-fill fs-5 danger"
+                                style="position: relative; bottom: 0.25rem;"></i>
+                            <span>3</span>
+                        </h3>
+                    </div>
+                    <div class="col-xxl-12 col-6 text-xxl-start text-center">
+                        <h6>Выручка</h6>
+                        <h3>
+                            <i class="bi bi-caret-up-fill fs-5 success"
+                                style="position: relative; bottom: 0.25rem;"></i>
+                            <span>4 260 266</span>
+                            <span class="ms-1 not-select">₽</span>
+                        </h3>
+                    </div>
+                </div>
+                <span class="text-black-50 text-xxl-start text-center">Период: месяц</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const monthsLabels = [
+            'Янв',
+            'Фев',
+            'Мар',
+            'Апр',
+            'Май',
+            'Июн',
+            'Июл',
+            'Авг',
+            'Сен',
+            'Окт',
+            'Ноя',
+            'Дек',
+        ];
+
+        const optionsElements = {
+            point: {
+                radius: 5,
+                hitRadius: 10,
+                hoverRadius: 10,
+            },
+            line: {
+                tension: 0.2,
+                borderWidth: 4,
+            }
+        }
+
+        const ordersData = {
+            labels: monthsLabels,
+            datasets: [{
+                label: 'Продаж',
+                backgroundColor: 'rgb(13, 110, 253)',
+                borderColor: 'rgb(13, 110, 253)',
+                data: [49, 50, 42, 57, 47, 55, 60, 59, 51, 54, 57, 40],
+            }]
+        };
+
+        const ordersConfig = {
+            type: 'line',
+            data: ordersData,
+            options: {
+                plugins: {
+                    legend: {
+                        display: false,
+                    },
+                    tooltip: {
+                        displayColors: false,
+                    },
+                },
+                elements: optionsElements
+            }
+        };
+
+        const revenueData = {
+            labels: monthsLabels,
+            datasets: [{
+                label: 'Выручка:',
+                backgroundColor: 'rgb(13, 110, 253)',
+                borderColor: 'rgb(13, 110, 253)',
+                data: [8098740, 3097096, 8759023, 7893272, 4814115, 6243846, 7391068, 4557385, 9881397, 4260266, 9431242, 5419127],
+            }]
+        };
+
+        const revenueConfig = {
+            type: 'line',
+            data: revenueData,
+            options: {
+                plugins: {
+                    legend: {
+                        display: false,
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                let label = context.dataset.label || '';
+
+                                if (label) {
+                                    label += ' ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += new Intl.NumberFormat('ru', { style: 'currency', currency: 'RUB' }).format(context.parsed.y);
+                                }
+                                return label;
+                            },
+                        },
+                        displayColors: false,
+                    },
+                },
+                elements: optionsElements
+            }
+        };
+    </script>
+
+    <script>
+        const orders = new Chart(
+            document.getElementById('orders'),
+            ordersConfig
+        );
+        const revenue = new Chart(
+            document.getElementById('revenue'),
+            revenueConfig
+        );
+    </script>
+</div>
 {% endblock %}
