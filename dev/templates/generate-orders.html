@@ -1,0 +1,7 @@
+{% load static %}
+<form method="post">
+    {% csrf_token %}
+    <label for="quantity">Число заказов для генерации:</label>
+    <input type="text" id="quantity" name="quantity">
+    <button type="submit">Сгенерировать</button>
+</form>
