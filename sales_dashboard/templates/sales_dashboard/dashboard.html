@@ -43,96 +43,78 @@
 
     <div class="row">
         <div class="col-xxl-9 col-12 mb-4">
-            <div class="row g-5">
+
+            <div class="row g-4">
                 <div class="col-lg-6 col-12">
                     <div class="mb-2 d-flex justify-content-between align-items-center">
                         <h5 class="my-0">Продажи</h5>
 
-                        <a class="pt-1 dropdown-toggle text-dark link-hover-invert" role="button" data-bs-toggle="dropdown"
-                            data-bs-auto-close="outside" aria-expanded="false">2022 год</a>
+                        <a class="pt-1 dropdown-toggle text-dark link-hover-invert" role="button"
+                            data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">2022 год</a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li class="dropstart"><a class="dropdown-item dropdown-toggle" href="#" role="button"
-                                    data-bs-toggle="dropdown" aria-expanded="false">Год</a>
+                                    data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">Год</a>
                                 <ul class="dropdown-menu text-center nested-dropdown">
                                     {% for year, orders in orders_by_all_years.items reversed %}
-                                    {% if orders %}
-                                    <li><a class="dropdown-item" href="#">
+                                    <li><a class="updateSalesChartDataBtn dropdown-item {% if year == 2022 %}active{% endif %}"
+                                        data-period="year">
                                             {{ year }}
                                         </a></li>
-                                    {% else %}
-                                    <li><a class="dropdown-item disabled" href="#">
-                                            {{ year }}
-                                        </a></li>
-                                    {% endif %}
                                     {% endfor %}
                                 </ul>
                             </li>
                             <li class="dropstart"><a class="dropdown-item dropdown-toggle" href="#" role="button"
-                                    data-bs-toggle="dropdown" aria-expanded="false">Месяц</a>
+                                    data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">Месяц</a>
                                 <ul class="dropdown-menu text-center nested-dropdown">
                                     {% for month, orders in orders_by_year.items %}
-                                    {% if orders %}
-                                    <li><a class="dropdown-item" href="#">
+                                    <li><a class="updateSalesChartDataBtn dropdown-item"
+                                        data-period="month">
                                             {{ month|get_month_name_by_number }}
                                         </a></li>
-                                    {% else %}
-                                    <li><a class="dropdown-item disabled" href="#">
-                                            {{ month|get_month_name_by_number}}
-                                        </a></li>
-                                    {% endif %}
                                     {% endfor %}
                                 </ul>
                             </li>
                         </ul>
 
                     </div>
-                    <canvas id="sales"></canvas>
                 </div>
 
                 <div class="col-lg-6 col-12">
                     <div class="mb-2 d-flex justify-content-between align-items-center">
                         <h5 class="my-0">Выручка</h5>
 
-                        <a class="pt-1 dropdown-toggle text-dark link-hover-invert" role="button" data-bs-toggle="dropdown"
-                            data-bs-auto-close="outside" aria-expanded="false">2022 год</a>
+                        <a class="pt-1 dropdown-toggle text-dark link-hover-invert" role="button"
+                            data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">2022 год</a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li class="dropstart"><a class="dropdown-item dropdown-toggle" href="#" role="button"
-                                    data-bs-toggle="dropdown" aria-expanded="false">Год</a>
+                                    data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">Год</a>
                                 <ul class="dropdown-menu text-center nested-dropdown">
                                     {% for year, orders in orders_by_all_years.items reversed %}
-                                    {% if orders %}
-                                    <li><a class="dropdown-item" href="#">
+                                    <li><a class="updateRevenueChartDataBtn dropdown-item {% if year == 2022 %}active{% endif %}">
                                             {{ year }}
                                         </a></li>
-                                    {% else %}
-                                    <li><a class="dropdown-item disabled" href="#">
-                                            {{ year }}
-                                        </a></li>
-                                    {% endif %}
                                     {% endfor %}
                                 </ul>
                             </li>
                             <li class="dropstart"><a class="dropdown-item dropdown-toggle" href="#" role="button"
-                                    data-bs-toggle="dropdown" aria-expanded="false">Месяц</a>
+                                    data-bs-toggle="dropdown" data-bs-auto-close="outside"
+                                    aria-expanded="false">Месяц</a>
                                 <ul class="dropdown-menu text-center nested-dropdown">
                                     {% for month, orders in orders_by_year.items %}
-                                    {% if orders %}
-                                    <li><a class="dropdown-item" href="#">
+                                    <li><a class="updateChartDataBtn dropdown-item" href="#">
                                             {{ month|get_month_name_by_number }}
                                         </a></li>
-                                    {% else %}
-                                    <li><a class="dropdown-item disabled" href="#">
-                                            {{ month|get_month_name_by_number}}
-                                        </a></li>
-                                    {% endif %}
                                     {% endfor %}
                                 </ul>
                             </li>
                         </ul>
 
                     </div>
-                    <canvas id="revenue"></canvas>
                 </div>
+            </div>
+
+            <div id="charts">
+                {% include 'sales_dashboard/charts.html' %}
             </div>
         </div>
 
@@ -162,110 +144,5 @@
             </div>
         </div>
     </div>
-
-    <script>
-        const monthsLabels = [
-            'Янв',
-            'Фев',
-            'Мар',
-            'Апр',
-            'Май',
-            'Июн',
-            'Июл',
-            'Авг',
-            'Сен',
-            'Окт',
-            'Ноя',
-            'Дек',
-        ];
-
-        const optionsElements = {
-            point: {
-                radius: 5,
-                hitRadius: 10,
-                hoverRadius: 10,
-            },
-            line: {
-                tension: 0.2,
-                borderWidth: 4,
-            }
-        }
-
-        const salesData = {
-            labels: monthsLabels,
-            datasets: [{
-                label: 'Продаж',
-                backgroundColor: 'rgb(13, 110, 253)',
-                borderColor: 'rgb(13, 110, 253)',
-                data: {{ sales_data }},
-            }]
-        };
-
-        const salesConfig = {
-            type: 'line',
-            data: salesData,
-            options: {
-                plugins: {
-                    legend: {
-                        display: false,
-                    },
-                    tooltip: {
-                        displayColors: false,
-                    },
-                },
-                elements: optionsElements
-            }
-        };
-
-        const revenueData = {
-            labels: monthsLabels,
-            datasets: [{
-                label: 'Выручка:',
-                backgroundColor: 'rgb(13, 110, 253)',
-                borderColor: 'rgb(13, 110, 253)',
-                data: {{ revenue_data }},
-            }]
-        };
-
-        const revenueConfig = {
-            type: 'line',
-            data: revenueData,
-            options: {
-                plugins: {
-                    legend: {
-                        display: false,
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function (context) {
-                                let label = context.dataset.label || '';
-
-                                if (label) {
-                                    label += ' ';
-                                }
-                                if (context.parsed.y !== null) {
-                                    label += new Intl.NumberFormat('ru', { style: 'currency', currency: 'RUB' }).format(context.parsed.y);
-                                }
-                                return label;
-                            },
-                        },
-                        displayColors: false,
-                    },
-                },
-                elements: optionsElements
-            }
-        };
-    </script>
-
-    <script>
-        const sales = new Chart(
-            document.getElementById('sales'),
-            salesConfig
-        );
-        const revenue = new Chart(
-            document.getElementById('revenue'),
-            revenueConfig
-        );
-    </script>
 </div>
 {% endblock %}

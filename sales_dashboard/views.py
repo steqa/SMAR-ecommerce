@@ -12,19 +12,29 @@ from authentication.decorators import allowed_users
 @allowed_users(allowed_roles=['seller'])
 def dashboard(request):
     orders = Order.objects.exclude(status=False)
-    orders_by_year = get_orders_by_period('year')
-    orders_by_all_years = get_orders_by_period('all_years')
-    sales_data = get_chart_data(datatype='sales', period='year')
-    revenue_data = get_chart_data(datatype='revenue', period='year')
+    orders_by_year = get_orders_by_period('year')['orders_by_period']
+    orders_by_all_years = get_orders_by_period('all_years')['orders_by_period']
 
     context = {
         'orders': orders,
         'orders_by_year': orders_by_year,
         'orders_by_all_years': orders_by_all_years,
-        'sales_data': sales_data,
-        'revenue_data': revenue_data,
     }
     return render(request, 'sales_dashboard/dashboard.html', context)
+
+
+def render_chart_data(request):
+    period = 'all_years'
+    sales_chart_data = get_chart_data(datatype='sales', period=period, year=2022, month=10)
+    revenue_chart_data = get_chart_data(datatype='revenue', period=period, year=2022, month=10)
+
+    context = {}
+    return JsonResponse({
+      'html': render_to_string('sales_dashboard/charts.html', context, request),
+      'period': period,
+      'sales_chart_data': sales_chart_data,
+      'revenue_chart_data': revenue_chart_data,
+    })
 
 
 @allowed_users(allowed_roles=['seller'])
