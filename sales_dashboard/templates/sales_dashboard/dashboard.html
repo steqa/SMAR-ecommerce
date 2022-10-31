@@ -46,7 +46,7 @@
             <div class="row g-4">
                 <div class="col-lg-6 col-12">
                     <h5 class="mb-3">Продажи</h5>
-                    <canvas id="orders"></canvas>
+                    <canvas id="sales"></canvas>
                 </div>
 
                 <div class="col-lg-6 col-12">
@@ -111,19 +111,19 @@
             }
         }
 
-        const ordersData = {
+        const salesData = {
             labels: monthsLabels,
             datasets: [{
                 label: 'Продаж',
                 backgroundColor: 'rgb(13, 110, 253)',
                 borderColor: 'rgb(13, 110, 253)',
-                data: [49, 50, 42, 57, 47, 55, 60, 59, 51, 54, 57, 40],
+                data: {{ sales_data }},
             }]
         };
 
-        const ordersConfig = {
+        const salesConfig = {
             type: 'line',
-            data: ordersData,
+            data: salesData,
             options: {
                 plugins: {
                     legend: {
@@ -143,7 +143,7 @@
                 label: 'Выручка:',
                 backgroundColor: 'rgb(13, 110, 253)',
                 borderColor: 'rgb(13, 110, 253)',
-                data: [8098740, 3097096, 8759023, 7893272, 4814115, 6243846, 7391068, 4557385, 9881397, 4260266, 9431242, 5419127],
+                data: {{ revenue_data }},
             }]
         };
 
@@ -178,9 +178,9 @@
     </script>
 
     <script>
-        const orders = new Chart(
-            document.getElementById('orders'),
-            ordersConfig
+        const sales = new Chart(
+            document.getElementById('sales'),
+            salesConfig
         );
         const revenue = new Chart(
             document.getElementById('revenue'),

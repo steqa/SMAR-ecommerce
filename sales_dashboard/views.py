@@ -5,16 +5,20 @@ from django.template.loader import render_to_string
 from django.core.paginator import Paginator
 from django.shortcuts import render
 from store.models import Order
-from .utils import is_valid_queryparam, is_valid_sortparam
+from .utils import is_valid_queryparam, is_valid_sortparam, get_chart_data
 from authentication.decorators import allowed_users
 
 
 @allowed_users(allowed_roles=['seller'])
 def dashboard(request):
     orders = Order.objects.exclude(status=False)
-    
+    sales_data = get_chart_data(datatype='sales')
+    revenue_data = get_chart_data(datatype='revenue')
+            
     context = {
         'orders': orders,
+        'sales_data': sales_data,
+        'revenue_data': revenue_data,
     }
     return render(request, 'sales_dashboard/dashboard.html', context)
 
