@@ -38,6 +38,19 @@
     opacity: 100%;
 }
 
+.link-hover-invert {
+    opacity: 50%;
+    text-decoration: none;
+}
+
+.link-hover-invert:hover {
+    opacity: 100%;
+}
+
+.link-hover-invert:active {
+    opacity: 50%;
+}
+
 .table-link {
     text-decoration: none;
 }

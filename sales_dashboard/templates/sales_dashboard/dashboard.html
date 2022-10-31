@@ -43,14 +43,94 @@
 
     <div class="row">
         <div class="col-xxl-9 col-12 mb-4">
-            <div class="row g-4">
+            <div class="row g-5">
                 <div class="col-lg-6 col-12">
-                    <h5 class="mb-3">Продажи</h5>
+                    <div class="mb-2 d-flex justify-content-between align-items-center">
+                        <h5 class="my-0">Продажи</h5>
+
+                        <a class="pt-1 dropdown-toggle text-dark link-hover-invert" role="button" data-bs-toggle="dropdown"
+                            data-bs-auto-close="outside" aria-expanded="false">2022 год</a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li class="dropstart"><a class="dropdown-item dropdown-toggle" href="#" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">Год</a>
+                                <ul class="dropdown-menu text-center nested-dropdown">
+                                    {% for year, orders in orders_by_all_years.items reversed %}
+                                    {% if orders %}
+                                    <li><a class="dropdown-item" href="#">
+                                            {{ year }}
+                                        </a></li>
+                                    {% else %}
+                                    <li><a class="dropdown-item disabled" href="#">
+                                            {{ year }}
+                                        </a></li>
+                                    {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                            <li class="dropstart"><a class="dropdown-item dropdown-toggle" href="#" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">Месяц</a>
+                                <ul class="dropdown-menu text-center nested-dropdown">
+                                    {% for month, orders in orders_by_year.items %}
+                                    {% if orders %}
+                                    <li><a class="dropdown-item" href="#">
+                                            {{ month|get_month_name_by_number }}
+                                        </a></li>
+                                    {% else %}
+                                    <li><a class="dropdown-item disabled" href="#">
+                                            {{ month|get_month_name_by_number}}
+                                        </a></li>
+                                    {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        </ul>
+
+                    </div>
                     <canvas id="sales"></canvas>
                 </div>
 
                 <div class="col-lg-6 col-12">
-                    <h5 class="mb-3">Выручка</h5>
+                    <div class="mb-2 d-flex justify-content-between align-items-center">
+                        <h5 class="my-0">Выручка</h5>
+
+                        <a class="pt-1 dropdown-toggle text-dark link-hover-invert" role="button" data-bs-toggle="dropdown"
+                            data-bs-auto-close="outside" aria-expanded="false">2022 год</a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li class="dropstart"><a class="dropdown-item dropdown-toggle" href="#" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">Год</a>
+                                <ul class="dropdown-menu text-center nested-dropdown">
+                                    {% for year, orders in orders_by_all_years.items reversed %}
+                                    {% if orders %}
+                                    <li><a class="dropdown-item" href="#">
+                                            {{ year }}
+                                        </a></li>
+                                    {% else %}
+                                    <li><a class="dropdown-item disabled" href="#">
+                                            {{ year }}
+                                        </a></li>
+                                    {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                            <li class="dropstart"><a class="dropdown-item dropdown-toggle" href="#" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">Месяц</a>
+                                <ul class="dropdown-menu text-center nested-dropdown">
+                                    {% for month, orders in orders_by_year.items %}
+                                    {% if orders %}
+                                    <li><a class="dropdown-item" href="#">
+                                            {{ month|get_month_name_by_number }}
+                                        </a></li>
+                                    {% else %}
+                                    <li><a class="dropdown-item disabled" href="#">
+                                            {{ month|get_month_name_by_number}}
+                                        </a></li>
+                                    {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        </ul>
+
+                    </div>
                     <canvas id="revenue"></canvas>
                 </div>
             </div>
