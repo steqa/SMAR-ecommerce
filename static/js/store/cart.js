@@ -34,7 +34,7 @@ function addCoockieItem(productID, action) {
 }
 
 function updateOrder(productID, action) {
-    const url = '/update-order/'
+    const url = window.location.pathname
     fetch(url, {
         method: 'POST',
         headers: {

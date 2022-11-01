@@ -66,8 +66,9 @@ pageBtn.forEach((element) => {
 })
 
 function submitFormData(paginate) {
-    let url = '/dashboard/orders-filter/' +
-        '?transaction_id=' + filterForm.transaction_id.value +
+    let url = '/dashboard/orders/' +
+        '?sort=' + true +
+        '?&ransaction_id=' + filterForm.transaction_id.value +
         '&email=' + filterForm.email.value +
         '&date_ordered_min=' + filterForm.date_ordered_min.value +
         '&date_ordered_max=' + filterForm.date_ordered_max.value +

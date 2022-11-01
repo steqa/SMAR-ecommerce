@@ -21,7 +21,7 @@ function submitFormData() {
     const shippingInfo = getFormData()['shippingInfo']
     const userInfo = getFormData()['userInfo']
 
-    const url = '/place-order/'
+    const url = '/checkout/'
     fetch(url, {
         method: 'POST',
         headers: {
