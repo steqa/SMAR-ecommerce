@@ -25,26 +25,63 @@ const optionsElements = {
     }
 }
 
-updateSalesChartData()
-updateRevenueChartData()
-window.onload = getChartData();
+buildSalesChart()
+buildRevenueChart()
 
-const chartsDiv = document.getElementById('charts')
-const updateSalesChartDataBtn = document.querySelectorAll('.updateSalesChartDataBtn')
-const updateRevenueChartDataBtn = document.querySelectorAll('.updateRevenueChartDataBtn')
+const chartSalesDiv = document.getElementById('chartSales')
+const chartRevenueDiv = document.getElementById('chartRevenue')
 
-updateSalesChartDataBtn.forEach((element) => {
-    element.addEventListener('click', function (e) {
-        const period = element.dataset['period']
-        if (period == 'month') {
-            
+window.onload = getChartData('all_years', null, null, 'sales');
+window.onload = getChartData('all_years', null, null, 'revenue');
+
+function updateChartDataBtnClick(element) {
+    const chartType = element.dataset.chart
+    let period = element.dataset.period
+    let selectedYear = null
+    let selectedMonth = null
+
+    if (period == 'month') {
+        selectedYear = document.querySelector(`[data-chart=${chartType}][data-period="year"].active`)
+        if (selectedYear) {
+            selectedYear = selectedYear.dataset.value
+            selectedMonth = element.dataset.value
+        } else {
+            period = 'all_years'
+            selectedYear = null
+            selectedMonth = null
         }
-        // getChartData(period)
-    })
-})
+        if (element.classList.contains('active')) {
+            period = 'year'
+            selectedMonth = null
+        }
+    } else if (period == 'year') {
+        selectedMonth = document.querySelector(`[data-chart=${chartType}][data-period="month"].active`)
+        if (selectedMonth) {
+            period = 'month'
+            selectedYear = element.dataset.value
+            selectedMonth = selectedMonth.dataset.value
+        } else {
+            selectedYear = element.dataset.value
+            selectedMonth = null
+        }
+        if (element.classList.contains('active')) {
+            period = 'all_years'
+            selectedYear = null
+            selectedMonth = null
+        }
+    }
+    getChartData(period, selectedYear, selectedMonth, chartType)
+}
 
-function getChartData(period) {
-    let url = '/dashboard/render-chart-data/'
+function getChartData(period, selectedYear, selectedMonth, chartType) {
+    let url = '/dashboard/' +
+        '?get_chart_data=' + true +
+        '&chart_type=' + chartType
+    if (period) {
+        url += '&period=' + period +
+            '&selected_year=' + selectedYear +
+            '&selected_month=' + selectedMonth
+    }
 
     fetch(url, {
     })
@@ -54,14 +91,16 @@ function getChartData(period) {
         })
 
         .then((data) => {
-            chartsDiv.innerHTML = data['html']
+            const chartData = extractChartData(data['chart_data'], data['period'])[0]
+            const chartLabels = extractChartData(data['chart_data'], data['period'])[1]
 
-            const salesData = extractChartData(data['sales_chart_data'], data['period'])[0]
-            const salesLabels = extractChartData(data['sales_chart_data'], data['period'])[1]
-            const revenueData = extractChartData(data['revenue_chart_data'], data['period'])[0]
-            const revenueLabels = extractChartData(data['revenue_chart_data'], data['period'])[1]
-            updateSalesChartData(data = salesData, labels = salesLabels)
-            updateRevenueChartData(data = revenueData, labels = revenueLabels)
+            if (data['chart_data']['type'] == 'sales') {
+                chartSalesDiv.innerHTML = data['html']
+                buildSalesChart(data = chartData, labels = chartLabels)
+            } else if (data['chart_data']['type'] == 'revenue') {
+                chartRevenueDiv.innerHTML = data['html']
+                buildRevenueChart(data = chartData, labels = chartLabels)
+            }
         })
 }
 
@@ -79,7 +118,7 @@ function extractChartData(data, period) {
     return [quantityData, labelsData]
 }
 
-function updateSalesChartData(data = null, labels = monthsLabels) {
+function buildSalesChart(data = null, labels = null) {
     const salesData = {
         labels: labels,
         datasets: [{
@@ -112,7 +151,7 @@ function updateSalesChartData(data = null, labels = monthsLabels) {
     );
 }
 
-function updateRevenueChartData(data = null, labels = monthsLabels) {
+function buildRevenueChart(data = null, labels = null) {
     const revenueData = {
         labels: labels,
         datasets: [{

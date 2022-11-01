@@ -1,4 +1,5 @@
 {% extends 'sales_dashboard/base.html' %}
+{% load static %}
 {% load dashboard-tags %}
 
 {% block title %}
@@ -43,78 +44,17 @@
 
     <div class="row">
         <div class="col-xxl-9 col-12 mb-4">
-
             <div class="row g-4">
                 <div class="col-lg-6 col-12">
-                    <div class="mb-2 d-flex justify-content-between align-items-center">
-                        <h5 class="my-0">Продажи</h5>
-
-                        <a class="pt-1 dropdown-toggle text-dark link-hover-invert" role="button"
-                            data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">2022 год</a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li class="dropstart"><a class="dropdown-item dropdown-toggle" href="#" role="button"
-                                    data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">Год</a>
-                                <ul class="dropdown-menu text-center nested-dropdown">
-                                    {% for year, orders in orders_by_all_years.items reversed %}
-                                    <li><a class="updateSalesChartDataBtn dropdown-item {% if year == 2022 %}active{% endif %}"
-                                        data-period="year">
-                                            {{ year }}
-                                        </a></li>
-                                    {% endfor %}
-                                </ul>
-                            </li>
-                            <li class="dropstart"><a class="dropdown-item dropdown-toggle" href="#" role="button"
-                                    data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">Месяц</a>
-                                <ul class="dropdown-menu text-center nested-dropdown">
-                                    {% for month, orders in orders_by_year.items %}
-                                    <li><a class="updateSalesChartDataBtn dropdown-item"
-                                        data-period="month">
-                                            {{ month|get_month_name_by_number }}
-                                        </a></li>
-                                    {% endfor %}
-                                </ul>
-                            </li>
-                        </ul>
-
+                    <div id="chartSales">
+                        {% include 'sales_dashboard/chart.html' with chart_type='sales' %}
                     </div>
                 </div>
-
                 <div class="col-lg-6 col-12">
-                    <div class="mb-2 d-flex justify-content-between align-items-center">
-                        <h5 class="my-0">Выручка</h5>
-
-                        <a class="pt-1 dropdown-toggle text-dark link-hover-invert" role="button"
-                            data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">2022 год</a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li class="dropstart"><a class="dropdown-item dropdown-toggle" href="#" role="button"
-                                    data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">Год</a>
-                                <ul class="dropdown-menu text-center nested-dropdown">
-                                    {% for year, orders in orders_by_all_years.items reversed %}
-                                    <li><a class="updateRevenueChartDataBtn dropdown-item {% if year == 2022 %}active{% endif %}">
-                                            {{ year }}
-                                        </a></li>
-                                    {% endfor %}
-                                </ul>
-                            </li>
-                            <li class="dropstart"><a class="dropdown-item dropdown-toggle" href="#" role="button"
-                                    data-bs-toggle="dropdown" data-bs-auto-close="outside"
-                                    aria-expanded="false">Месяц</a>
-                                <ul class="dropdown-menu text-center nested-dropdown">
-                                    {% for month, orders in orders_by_year.items %}
-                                    <li><a class="updateChartDataBtn dropdown-item" href="#">
-                                            {{ month|get_month_name_by_number }}
-                                        </a></li>
-                                    {% endfor %}
-                                </ul>
-                            </li>
-                        </ul>
-
+                    <div id="chartRevenue">
+                        {% include 'sales_dashboard/chart.html' with chart_type='revenue' %}
                     </div>
                 </div>
-            </div>
-
-            <div id="charts">
-                {% include 'sales_dashboard/charts.html' %}
             </div>
         </div>
 
@@ -145,4 +85,5 @@
         </div>
     </div>
 </div>
+<script src="{% static 'js/sales_dashboard/dashboard.js' %}"></script>
 {% endblock %}
