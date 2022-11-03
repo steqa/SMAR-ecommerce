@@ -14,31 +14,64 @@
 <div class="my-4">
     <div class="row g-4 mb-4">
         <div class="col-md-4 col-12">
-            <a href="" class="text-decoration-none text-dark">
-                <div class="card shadow-sm p-4 text-center">
-                    <h5>Ожидают</h5>
-                    <h3>{{ orders|get_orders_by_status:'1'|length }}</h3>
-                    <span class="text-black-50">за месяц</span>
+            <div class="card shadow-sm p-4 text-center">
+                <h5>Ожидают</h5>
+                <h3 data-status-value="1">{{ orders|get_orders_by_status:'1'|length }}</h3>
+                <div class="dropdown-center">
+                    <span class="text-dark text-opacity-50">за</span>
+                    <a class="dropdown-toggle text-dark link-hover-invert" role="button" data-bs-toggle="dropdown"
+                        data-bs-auto-close="outside" aria-expanded="false" data-status-btn="1">
+                        месяц</a>
+                    <ul class="dropdown-menu dropdown-menu-center text-center">
+                        <li><a class="updateStatusStatBtn dropdown-item pointer active" data-period="month"
+                                data-status="1">месяц</a></li>
+                        <li><a class="updateStatusStatBtn dropdown-item pointer" data-period="year"
+                                data-status="1">год</a></li>
+                        <li><a class="updateStatusStatBtn dropdown-item pointer" data-period="all_years"
+                                data-status="1">всё время</a></li>
+                    </ul>
                 </div>
-            </a>
+            </div>
         </div>
         <div class="col-md-4 col-12">
-            <a href="" class="text-decoration-none text-dark">
-                <div class="card shadow-sm p-4 text-center">
-                    <h5>Отправлено</h5>
-                    <h3>{{ orders|get_orders_by_status:'2'|length }}</h3>
-                    <span class="text-black-50">за месяц</span>
+            <div class="card shadow-sm p-4 text-center">
+                <h5>Отправлено</h5>
+                <h3 data-status-value="2">{{ orders|get_orders_by_status:'2'|length }}</h3>
+                <div class="dropdown-center">
+                    <span class="text-dark text-opacity-50">за</span>
+                    <a class="dropdown-toggle text-dark link-hover-invert" role="button" data-bs-toggle="dropdown"
+                        data-bs-auto-close="outside" aria-expanded="false" data-status-btn="2">
+                        месяц</a>
+                    <ul class="dropdown-menu dropdown-menu-center text-center">
+                        <li><a class="updateStatusStatBtn dropdown-item pointer active" data-period="month"
+                                data-status="2">месяц</a></li>
+                        <li><a class="updateStatusStatBtn dropdown-item pointer" data-period="year"
+                                data-status="2">год</a></li>
+                        <li><a class="updateStatusStatBtn dropdown-item pointer" data-period="all_years"
+                                data-status="2">всё время</a></li>
+                    </ul>
                 </div>
-            </a>
+            </div>
         </div>
         <div class="col-md-4 col-12">
-            <a href="" class="text-decoration-none text-dark">
-                <div class="card shadow-sm p-4 text-center">
-                    <h5>Выполнено</h5>
-                    <h3>{{ orders|get_orders_by_status:'3'|length }}</h3>
-                    <span class="text-black-50">за месяц</span>
+            <div class="card shadow-sm p-4 text-center">
+                <h5>Выполнено</h5>
+                <h3 data-status-value="3">{{ orders|get_orders_by_status:'3'|length }}</h3>
+                <div class="dropdown-center">
+                    <span class="text-dark text-opacity-50">за</span>
+                    <a class="dropdown-toggle text-dark link-hover-invert" role="button" data-bs-toggle="dropdown"
+                        data-bs-auto-close="outside" aria-expanded="false" data-status-btn="3">
+                        месяц</a>
+                    <ul class="dropdown-menu dropdown-menu-center text-center">
+                        <li><a class="updateStatusStatBtn dropdown-item pointer active" data-period="month"
+                                data-status="3">месяц</a></li>
+                        <li><a class="updateStatusStatBtn dropdown-item pointer" data-period="year"
+                                data-status="3">год</a></li>
+                        <li><a class="updateStatusStatBtn dropdown-item pointer" data-period="all_years"
+                                data-status="3">всё время</a></li>
+                    </ul>
                 </div>
-            </a>
+            </div>
         </div>
     </div>
 
@@ -65,25 +98,41 @@
                     <div class="col-xxl-12 col-6 text-xxl-start text-center">
                         <h6>Продажи</h6>
                         <h3>
-                            <i class="bi bi-caret-down-fill fs-5 danger"
-                                style="position: relative; bottom: 0.25rem;"></i>
-                            <span>3</span>
+                            <i class="bi bi-caret-up-fill fs-5 text-success hide"
+                                style="position: relative; bottom: 0.25rem;" data-sales-difference-sign="+"></i>
+                            <i class="bi bi-caret-down-fill fs-5 text-danger hide"
+                                style="position: relative; bottom: 0.25rem;" data-sales-difference-sign="-"></i>
+                            <span data-sales-difference></span>
                         </h3>
                     </div>
                     <div class="col-xxl-12 col-6 text-xxl-start text-center">
                         <h6>Выручка</h6>
                         <h3>
-                            <i class="bi bi-caret-up-fill fs-5 success"
-                                style="position: relative; bottom: 0.25rem;"></i>
-                            <span>4 260 266</span>
+                            <i class="bi bi-caret-up-fill fs-5 text-success hide"
+                                style="position: relative; bottom: 0.25rem;" data-revenue-difference-sign="+"></i>
+                            <i class="bi bi-caret-down-fill fs-5 text-danger hide"
+                                style="position: relative; bottom: 0.25rem;" data-revenue-difference-sign="-"></i>
+                            <span data-revenue-difference></span>
                             <span class="ms-1 not-select">₽</span>
                         </h3>
                     </div>
                 </div>
-                <span class="text-black-50 text-xxl-start text-center">Период: месяц</span>
+                <div class="dropdown-center text-xxl-start text-center">
+                    <span class="text-dark text-opacity-50">Период:</span>
+                    <a class="dropdown-toggle text-dark link-hover-invert" role="button" data-bs-toggle="dropdown"
+                        data-bs-auto-close="outside" aria-expanded="false" data-difference-btn>
+                        месяц</a>
+                    <ul class="dropdown-menu dropdown-menu-center text-center">
+                        <li><a class="updateDifferenceStatBtn dropdown-item pointer active"
+                                data-period="month">месяц</a></li>
+                        <li><a class="updateDifferenceStatBtn dropdown-item pointer" data-period="year">год</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
 </div>
-<script src="{% static 'js/sales_dashboard/dashboard.js' %}"></script>
+<script src="{% static 'js/sales_dashboard/charts.js' %}"></script>
+<script src="{% static 'js/sales_dashboard/status-stat.js' %}"></script>
+<script src="{% static 'js/sales_dashboard/difference-stat.js' %}"></script>
 {% endblock %}

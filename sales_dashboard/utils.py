@@ -2,7 +2,7 @@ import datetime
 import pytz
 import json
 from calendar import monthrange
-from django.template.defaultfilters import date
+from django.template.defaultfilters import date, floatformat
 from django.core.paginator import Paginator
 from django.http.response import JsonResponse
 from django.template.loader import render_to_string
@@ -18,13 +18,17 @@ def is_valid_sortparam(param):
     return param == '0' or param == '1' or param == '2'
 
 
+def get_datetime_now():
+    tz = pytz.timezone(TIME_ZONE)
+    datetime_now = datetime.datetime.now(tz)
+    return datetime_now
+
 def render_chart_data(request):
     period = request.GET.get('period')
     selected_year = request.GET.get('selected_year')
     selected_month = request.GET.get('selected_month')
     chart_type = request.GET.get('chart_type')
-    tz = pytz.timezone(TIME_ZONE)
-    datetime_now = datetime.datetime.now(tz)
+    datetime_now = get_datetime_now()
 
     if period == 'month':
         selected_year = int(selected_year)
@@ -64,8 +68,7 @@ def render_chart_data(request):
 
 def get_orders_by_period(period, year, month):
     data = {}
-    tz = pytz.timezone(TIME_ZONE)
-    datetime_now = datetime.datetime.now(tz)
+    datetime_now = get_datetime_now()
     if period == 'all_years':
         orders = Order.objects.filter(status=3)
         period_range = range(2004, datetime_now.year + 1)
@@ -219,3 +222,68 @@ def change_order_status(request, order):
         date_updated = date(order.date_updated, 'm/d/Y G:i:s')
         
     return JsonResponse({'status': status, 'date_updated': date_updated}, safe=True)
+
+
+def get_order_status_stat(request):
+    datetime_now = get_datetime_now()
+    
+    orders = Order.objects.exclude(status=False)
+    period = request.GET.get('period')
+    status = request.GET.get('status')
+
+    if period == 'month':
+        filtered_orders = orders.filter(date_ordered__year=datetime_now.year, date_ordered__month=datetime_now.month, status=int(status))
+    elif period == 'year':
+        filtered_orders = orders.filter(date_ordered__year=datetime_now.year, status=int(status))
+    elif period == 'all_years':
+        filtered_orders = orders.filter(status=int(status))
+        
+    return JsonResponse({'orders': len(filtered_orders)}, safe=True)
+
+
+def get_difference_stat(request):
+    datetime_now = get_datetime_now()
+
+    orders = Order.objects.exclude(status=False)
+    period = request.GET.get('period')
+    
+    present_month = datetime_now.month
+    present_year = datetime_now.year
+    if period == 'month':
+        past_month = datetime_now.month - 1
+        past_year = datetime_now.year
+        if past_month == 0:
+            past_month = 12
+            past_year = datetime_now.year - 1
+
+        past_orders = orders.filter(date_ordered__year=past_year, date_ordered__month=past_month, status=3)
+        present_orders = orders.filter(date_ordered__year=present_year, date_ordered__month=present_month, status=3)
+    elif period == 'year':
+        past_year = datetime_now.year - 1
+        past_orders = orders.filter(date_ordered__year=past_year, status=3)
+        present_orders = orders.filter(date_ordered__year=present_year, status=3)
+        
+    sales_difference = len(present_orders) - len(past_orders)
+    if sales_difference < 0:
+        sales_difference = sales_difference * -1
+        sales_sign = '-'
+    elif sales_difference > 0:
+        sales_sign = '+'
+    else:
+        sales_sign = '0'
+        
+    revenue_difference = sum([order.get_total_order_price for order in present_orders]) - sum([order.get_total_order_price for order in past_orders])
+    if revenue_difference < 0:
+        revenue_difference = revenue_difference * -1
+        revenue_sign = '-'
+    elif revenue_difference > 0:
+        revenue_sign = '+'
+    else:
+        revenue_sign = '0'
+        
+    return JsonResponse({
+        'sales_difference': floatformat(sales_difference, '-2g'),
+        'sales_sign': sales_sign,
+        'revenue_difference': floatformat(revenue_difference, '-2g'),
+        'revenue_sign': revenue_sign,
+    }, safe=True)

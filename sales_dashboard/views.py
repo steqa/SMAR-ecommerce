@@ -1,16 +1,27 @@
+import datetime
+import pytz
+from ecommerce.settings import TIME_ZONE
 from django.shortcuts import render
 from store.models import Order
-from .utils import render_chart_data, paginate_orders, filter_orders, change_order_status
+from .utils import render_chart_data, paginate_orders, filter_orders, change_order_status, get_order_status_stat, get_difference_stat
 from authentication.decorators import allowed_users
 
 
 @allowed_users(allowed_roles=['seller'])
 def dashboard(request):
-    orders = Order.objects.exclude(status=False)
+    tz = pytz.timezone(TIME_ZONE)
+    datetime_now = datetime.datetime.now(tz)
+    orders = Order.objects.exclude(status=False).filter(date_ordered__year=datetime_now.year, date_ordered__month=datetime_now.month)
 
     if request.method == 'GET':
         if request.GET.get('get_chart_data'):
             return render_chart_data(request)
+        
+        if request.GET.get('get_order_status_stat'):
+            return get_order_status_stat(request)
+        
+        if request.GET.get('get_difference_stat'):
+            return get_difference_stat(request)
 
     context = {
         'orders': orders,

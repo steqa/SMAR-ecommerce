@@ -13,11 +13,8 @@
             data-bs-auto-close="outside" aria-expanded="false">
             Мес:
             {% if selected_month is None %}
-            Все
-            {% else %}
-            {{ selected_month|get_month_name_by_number }}
-            {% endif %}
-        </a>
+            Все{% else %}
+            {{ selected_month|get_month_name_by_number }}{% endif %}</a>
         <ul class="dropdown-menu dropdown-menu-end text-center nested-dropdown">
             {% for month, orders in orders_by_year.items %}
             <li><a class="dropdown-item pointer {% if selected_month == month %}active{% endif %}" data-period="month"
@@ -30,11 +27,8 @@
             data-bs-auto-close="outside" aria-expanded="false">
             Год:
             {% if selected_year is None %}
-            Все
-            {% else %}
-            {{ selected_year }}
-            {% endif %}
-        </a>
+            Все{% else %}
+            {{ selected_year }}{% endif %}</a>
         <ul class="dropdown-menu dropdown-menu-end text-center nested-dropdown">
             {% for year, orders in orders_by_all_years.items reversed %}
             <li><a class="dropdown-item pointer {% if selected_year == year %}active{% endif %}" data-period="year"
