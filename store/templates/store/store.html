@@ -9,35 +9,102 @@
 {% block active-store %}active{% endblock %}
 
 {% block content %}
-<div class="row gy-2 gx-5 my-4">
-    {% for product in products %}
-    <div class="col-xxl-3 col-lg-4 col-md-6 col-12 mb-4">
-        <div class="card shadow-sm bg-body">
-            <div class="card-body">
-                <a href="#">
-                    <img src="{{ product.image.url }}" class="img-fluid rounded-2 mb-3" alt="...">
-                </a>
-                <h5 class="card-title" style="min-height: 49px;">{{ product.name }}</h5>
-                <hr>
-                <h4 class="m-0 mb-2 font-monospace fw-semibold">{{ product.price|floatformat:"-2g" }}<span
-                        class="ms-1">₽</span></h4>
-                <div class="d-flex justify-content-between align-items-center">
-                    <button data-product="{{ product.id }}" data-action="add" class="add-to-cart-btn btn btn-primary">
-                        <span>В корзину</span>
-                        <div class="success-btn">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="1" height="1" fill="currentColor"
-                                class="bi bi-check-lg" viewBox="2 2 13 13">
-                                <path
-                                    d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
-                            </svg>
+<div class="row my-4 gx-5">
+    <div class="col-4">
+        <div style="position: sticky; top: 1.5rem;">
+            <input class="form-control mb-4 shadow-sm" type="text" placeholder="Поиск">
+
+            <div class="accordion mb-4 shadow-sm" id="accordionPanelsStayOpenExample">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="false"
+                            aria-controls="panelsStayOpen-collapseOne">
+                            Цена
+                        </button>
+                    </h2>
+                    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse"
+                        aria-labelledby="panelsStayOpen-headingOne">
+                        <div class="accordion-body">
+                            <div class="row gx-3">
+                                <div class="col">
+                                    <input type="text" class="form-control" placeholder="От">
+                                </div>
+                                <div class="col">
+                                    <input type="text" class="form-control" placeholder="До">
+                                </div>
+                            </div>
                         </div>
-                    </button>
-                    <a href="#" class="btn btn-outline-primary">Подробнее</a>
+                    </div>
                 </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false"
+                            aria-controls="panelsStayOpen-collapseTwo">
+                            Наличие
+                        </button>
+                    </h2>
+                    <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse"
+                        aria-labelledby="panelsStayOpen-headingTwo">
+                        <div class="accordion-body">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="inStock">
+                                <label class="form-check-label" for="inStock">
+                                    В наличии
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="outOfStock">
+                                <label class="form-check-label" for="outOfStock">
+                                    Отсутствующие в продаже
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-grid gap-2">
+                <button class="btn btn-primary" type="button">Применить</button>
+                <button class="btn btn-outline-primary" type="button">Сбросить</button>
             </div>
         </div>
     </div>
-    {% endfor %}
+
+    <div class="col-8">
+        <div class="row gx-5 gy-2">
+            {% for product in products %}
+            <div class="col-xxl-4 col-lg-6 col-md-12 col-12 mb-4">
+                <div class="card shadow-sm bg-body">
+                    <div class="card-body">
+                        <a href="#">
+                            <img src="{{ product.image.url }}" class="img-fluid rounded-2 mb-3" alt="...">
+                        </a>
+                        <h5 class="card-title" style="min-height: 49px;">{{ product.name }}</h5>
+                        <hr>
+                        <h4 class="m-0 mb-2 font-monospace fw-semibold">{{ product.price|floatformat:"-2g" }}<span
+                                class="ms-1">₽</span></h4>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <button data-product="{{ product.id }}" data-action="add"
+                                class="add-to-cart-btn btn btn-primary">
+                                <span>В корзину</span>
+                                <div class="success-btn">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="1" height="1" fill="currentColor"
+                                        class="bi bi-check-lg" viewBox="2 2 13 13">
+                                        <path
+                                            d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
+                                    </svg>
+                                </div>
+                            </button>
+                            <a href="#" class="btn btn-outline-primary">Подробнее</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
 </div>
 
 <script src="{% static 'js/store/add-to-cart-btn.js' %}"></script>
