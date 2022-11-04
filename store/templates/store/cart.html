@@ -33,84 +33,66 @@
         </div>
     </div>
 
-    <div class="card shadow-sm">
-        <div class="m-3">
-            <div>
-                <div class="row">
-                    <div class="col-lg-1 col-2"></div>
-                    <div class="col-lg-5 col-4">
-                        <h6><strong>Имя</strong></h6>
-                    </div>
-                    <div class="col-2">
-                        <h6><strong>Цена</strong></h6>
-                    </div>
-                    <div class="col-2">
-                        <h6><strong>Кол-во</strong></h6>
-                    </div>
-                    <div class="col-2">
-                        <h6><strong>Итого</strong></h6>
-                    </div>
-                </div>
-            </div>
-            {% for item in order_items %}
-            <div id="{{ item.product.id }}">
-                <hr>
-                <div class="row align-items-center">
-                    <div class="col-lg-1 col-2">
-                        <img src="{{ item.product.image.url }}" class="rounded-2"
-                            style="height: 50px;" alt="...">
-                    </div>
-                    <div class="col-lg-5 col-4">
-                        <h6>{{ item.product.name }}</h6>
-                    </div>
-                    <div class="col-2">
-                        <h6 class="font-monospace fw-semibold not-select">{{ item.product.price|floatformat:"-2g" }}<span class="ms-1">₽</span></h6>
-                    </div>
-                    <div class="col-2">
-                        <div class="d-flex">
-                            <a data-product="{{ item.product.id }}" data-action="remove" class="text-dark pointer link-hover">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
-                                    class="bi bi-caret-left-fill mb-2" viewBox="0 0 16 16">
+    <div class="border rounded-2 shadow-sm">
+        <table class="table table-borderless">
+            <thead class="border-bottom">
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col">Имя</th>
+                    <th scope="col">Цена</th>
+                    <th scope="col">Кол-во</th>
+                    <th scope="col">Итого</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order_items %}
+                <tr style="vertical-align: middle" class="border-bottom" id="{{ item.product.id }}">
+                    <th scope="row">
+                        <img src="{{ item.product.image.url }}" class="rounded-2" style="height: 50px;" alt="...">
+                    </th>
+                    <td>{{ item.product.name }}</td>
+                    <td class="font-monospace">
+                        {{ item.product.price|floatformat:"-2g"}}
+                        <span class="ms-1 not-select">₽</span>
+                    </td>
+                    <td class="font-monospace">
+                        <div class="d-flex align-items-center">
+                            <a data-product="{{ item.product.id }}" data-action="remove"
+                                class="text-dark pointer link-hover p-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor"
+                                    class="bi bi-caret-left-fill" viewBox="0 0 16 16">
                                     <path
                                         d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z" />
                                 </svg>
                             </a>
-                            <h6 class="font-monospace fw-semibold m-0 not-select productQuantity">{{ item.quantity }}</h6>
-                            <a data-product="{{ item.product.id }}" data-action="add" class="text-dark pointer link-hover">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
-                                    class="bi bi-caret-right-fill mb-2" viewBox="0 0 16 16">
+                            <h6 class="m-0 productQuantity">{{ item.quantity }}
+                            </h6>
+                            <a data-product="{{ item.product.id }}" data-action="add"
+                                class="text-dark pointer link-hover p-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor"
+                                    class="bi bi-caret-right-fill" viewBox="0 0 16 16">
                                     <path
                                         d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z" />
                                 </svg>
                             </a>
                         </div>
-                    </div>
-                    <div class="col-2">
-                        <h6 class="font-monospace fw-semibold not-select"><span class="productPrice">{{ item.get_total_items_price|floatformat:"-2g" }}</span><span class="ms-1">₽</span></h6>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-            <hr>
-            <div>
-                <div class="row align-items-center">
-                    <div class="col-lg-1 col-2">
-                    </div>
-                    <div class="col-lg-5 col-4">
-                    </div>
-                    <div class="col-2">
-                    </div>
-                    <div class="col-2">
-                        <div class="d-flex">
-                            <h5 class="font-monospace fw-semibold m-0 ms-1 not-select cartTotalQuantity">{{ order.get_total_order_quantity }}</h5>
-                        </div>
-                    </div>
-                    <div class="col-2">
-                        <h5 class="font-monospace fw-semibold m-0 not-select"><span class="cartTotalPrice">{{ order.get_total_order_price|floatformat:"-2g" }}</span><span class="ms-1">₽</span></h5>
-                    </div>
-                </div>
-            </div>
-        </div>
+                    </td>
+                    <td class="font-monospace productPrice">
+                        {{item.get_total_items_price|floatformat:"-2g" }}
+                        <span class="ms-1 not-select">₽</span>
+                    </td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td colspan="3"></td>
+                    <td class="fw-semibold font-monospace cartTotalQuantity">{{order.get_total_order_quantity }}</td>
+                    <td class="fw-semibold font-monospace">
+                        <span class="cartTotalPrice">{{ order.get_total_order_price|floatformat:"-2g" }}</span>
+                        <span class="ms-1 not-select">₽</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 

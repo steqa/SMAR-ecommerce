@@ -69,45 +69,44 @@
         </p>
         <hr>
         <h5 class="my-2">Продукты заказа:</h4>
-            <table class="table table-striped table-borderless">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Имя</th>
-                        <th scope="col">Цена</th>
-                        <th scope="col">Кол-во</th>
-                        <th scope="col">Итого</th>
-                    </tr>
-                </thead>
-                <tbody id="orders">
-                    {% for item in order_items %}
-                    <tr>
-                        <th scope="row">
-                            <script>getNumber()</script>
-                        </th>
-                        <td>{{ item.product.name }}</td>
-                        <td class="font-monospace">
-                            {{ item.product.price|floatformat:"-2g"}}
-                            <span class="ms-1 not-select">₽</span>
-                        </td>
-                        <td class="font-monospace">{{ item.quantity }}</td>
-                        <td class="font-monospace">
-                            {{item.get_total_items_price|floatformat:"-2g" }}
-                            <span class="ms-1 not-select">₽</span>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                    <tr>
-                        <td colspan="3"></td>
-                        <td class="fw-semibold font-monospace">{{order.get_total_order_quantity }}</td>
-                        <td class="fw-semibold font-monospace">
-                            {{ order.get_total_order_price|floatformat:"-2g" }}
-                            <span class="ms-1 not-select">₽</span>
-                        </td>
-                    </tr>
-                    {% include 'sales_dashboard/orders-list.html' %}
-                </tbody>
-            </table>
+        <table class="table table-striped table-borderless">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Имя</th>
+                    <th scope="col">Цена</th>
+                    <th scope="col">Кол-во</th>
+                    <th scope="col">Итого</th>
+                </tr>
+            </thead>
+            <tbody id="orders">
+                {% for item in order_items %}
+                <tr>
+                    <th scope="row">
+                        <script>getNumber()</script>
+                    </th>
+                    <td>{{ item.product.name }}</td>
+                    <td class="font-monospace">
+                        {{ item.product.price|floatformat:"-2g"}}
+                        <span class="ms-1 not-select">₽</span>
+                    </td>
+                    <td class="font-monospace">{{ item.quantity }}</td>
+                    <td class="font-monospace">
+                        {{item.get_total_items_price|floatformat:"-2g" }}
+                        <span class="ms-1 not-select">₽</span>
+                    </td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td colspan="3"></td>
+                    <td class="fw-semibold font-monospace">{{order.get_total_order_quantity }}</td>
+                    <td class="fw-semibold font-monospace">
+                        {{ order.get_total_order_price|floatformat:"-2g" }}
+                        <span class="ms-1 not-select">₽</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 
